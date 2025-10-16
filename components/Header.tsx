@@ -11,7 +11,7 @@ interface HeaderProps {
 
 export default function Header({ activePage = 'home' }: HeaderProps) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const { user, isAuthenticated, signIn, signUp, signOut } = useAuth();
+  const { user, isAuthenticated, isLoading, signOut } = useAuth();
   return (
     <header className="w-full bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -70,25 +70,29 @@ export default function Header({ activePage = 'home' }: HeaderProps) {
           </div>
 
           <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
+            {!isLoading && (
               <>
-                <span className="text-black text-sm font-medium">
-                  {user?.firstName} {user?.lastName}
-                </span>
-                <button
-                  onClick={signOut}
-                  className="px-4 py-2 border border-black rounded-md text-black text-sm font-medium hover:bg-gray-50"
-                >
-                  Log out
-                </button>
+                {isAuthenticated ? (
+                  <>
+                    <span className="text-black text-sm font-medium">
+                      {user?.firstName} {user?.lastName}
+                    </span>
+                    <button
+                      onClick={signOut}
+                      className="px-4 py-2 border border-black rounded-md text-black text-sm font-medium hover:bg-gray-50"
+                    >
+                      Log out
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="px-4 py-2 border border-black rounded-md text-black text-sm font-medium hover:bg-gray-50"
+                  >
+                    Sign In
+                  </button>
+                )}
               </>
-            ) : (
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="px-4 py-2 border border-black rounded-md text-black text-sm font-medium hover:bg-gray-50"
-              >
-                Sign In
-              </button>
             )}
           </div>
         </div>
@@ -97,8 +101,6 @@ export default function Header({ activePage = 'home' }: HeaderProps) {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onSignIn={signIn}
-        onSignUp={signUp}
       />
     </header>
   );

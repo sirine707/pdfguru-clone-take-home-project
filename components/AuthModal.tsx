@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSignIn: (email: string, password: string) => void;
-  onSignUp: (firstName: string, lastName: string, email: string, password: string) => void;
 }
 
-export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -17,7 +16,17 @@ export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthM
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  
+  const { signIn, signUp, isLoading, error, clearError } = useAuth();
+
+  // Clear error when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      clearError();
+      setValidationErrors({});
+    }
+  }, [isOpen, clearError]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -43,43 +52,53 @@ export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthM
       }
     }
 
-    setErrors(newErrors);
+    setValidationErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) {
       return;
     }
 
-    if (isSignUp) {
-      onSignUp(formData.firstName, formData.lastName, formData.email, formData.password);
-    } else {
-      onSignIn(formData.email, formData.password);
-    }
+    try {
+      if (isSignUp) {
+        await signUp(formData.firstName, formData.lastName, formData.email, formData.password);
+      } else {
+        await signIn(formData.email, formData.password);
+      }
 
-    // Reset form
-    setFormData({ firstName: "", lastName: "", email: "", password: "" });
-    setErrors({});
-    onClose();
+      // Success - reset form and close modal
+      setFormData({ firstName: "", lastName: "", email: "", password: "" });
+      setValidationErrors({});
+      onClose();
+    } catch (err) {
+      // Error is handled by the context and displayed via error state
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+    // Clear validation error when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({ ...prev, [name]: "" }));
+    }
+    
+    // Clear API error when user starts typing
+    if (error) {
+      clearError();
     }
   };
 
   const switchMode = () => {
     setIsSignUp(!isSignUp);
     setFormData({ firstName: "", lastName: "", email: "", password: "" });
-    setErrors({});
+    setValidationErrors({});
+    clearError();
   };
 
   if (!isOpen) return null;
@@ -101,6 +120,12 @@ export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthM
           </button>
         </div>
 
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <>
@@ -114,13 +139,13 @@ export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthM
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                    errors.firstName ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
+                    validationErrors.firstName ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter your first name"
                 />
-                {errors.firstName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                {validationErrors.firstName && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.firstName}</p>
                 )}
               </div>
 
@@ -134,13 +159,13 @@ export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthM
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                    errors.lastName ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
+                    validationErrors.lastName ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter your last name"
                 />
-                {errors.lastName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                {validationErrors.lastName && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.lastName}</p>
                 )}
               </div>
             </>
@@ -156,13 +181,13 @@ export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthM
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                errors.email ? "border-red-500" : "border-gray-300"
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
+                validationErrors.email ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter your email"
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            {validationErrors.email && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
             )}
           </div>
 
@@ -176,21 +201,22 @@ export default function AuthModal({ isOpen, onClose, onSignIn, onSignUp }: AuthM
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                errors.password ? "border-red-500" : "border-gray-300"
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
+                validationErrors.password ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter your password"
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            {validationErrors.password && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.password}</p>
             )}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md font-medium transition-colors"
+            disabled={isLoading}
+            className="w-full bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-md font-medium transition-colors"
           >
-            {isSignUp ? "Sign Up" : "Sign In"}
+            {isLoading ? "Loading..." : (isSignUp ? "Sign Up" : "Sign In")}
           </button>
         </form>
 
