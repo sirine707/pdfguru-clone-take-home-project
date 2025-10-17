@@ -7,6 +7,7 @@ import FileUploadModal from "./FileUploadModal";
 import LoadingModal from "./LoadingModal";
 import SuccessModal from "./SuccessModal";
 import ErrorModal from "./ErrorModal";
+import MergeModal from "./MergeModal";
 import { useFile } from "../contexts/FileContext";
 
 interface Tool {
@@ -62,6 +63,7 @@ export default function EditSignModule() {
     fileName: string;
   } | null>(null);
   const [conversionError, setConversionError] = useState<string | null>(null);
+  const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
 
   const handleToolClick = (toolId: string) => {
     setSelectedTool(toolId);
@@ -114,7 +116,7 @@ export default function EditSignModule() {
         break;
 
       case "merge":
-        alert("Merge PDF - Not implemented yet");
+        setIsMergeModalOpen(true);
         break;
 
       case "ocr":
@@ -167,13 +169,18 @@ export default function EditSignModule() {
         downloadFile(data.result.fileUrl, data.result.fileName);
       } else {
         setConversionError(
-          data.message || `${toolId === "compress" ? "Compression" : "OCR"} failed. Please try again.`
+          data.message ||
+            `${
+              toolId === "compress" ? "Compression" : "OCR"
+            } failed. Please try again.`
         );
       }
     } catch (error) {
       console.error(`${toolId} error:`, error);
       setConversionError(
-        `An error occurred during ${toolId === "compress" ? "compression" : "OCR"}. Please try again.`
+        `An error occurred during ${
+          toolId === "compress" ? "compression" : "OCR"
+        }. Please try again.`
       );
     } finally {
       setIsConverting(false);
@@ -192,6 +199,42 @@ export default function EditSignModule() {
   const handleCloseResult = () => {
     setConversionResult(null);
     setConversionError(null);
+  };
+
+  const handleMerge = async (files: File[]) => {
+    setIsConverting(true);
+    setConversionError(null);
+    setIsMergeModalOpen(false);
+
+    try {
+      const formData = new FormData();
+      files.forEach((file, index) => {
+        formData.append(`file${index}`, file);
+      });
+
+      const response = await fetch(
+        `http://localhost:4000/converter/convert/merge`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success && data.result) {
+        setConversionResult(data.result);
+        // Automatically download the file
+        downloadFile(data.result.fileUrl, data.result.fileName);
+      } else {
+        setConversionError(data.message || "Merge failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Merge error:", error);
+      setConversionError("An error occurred during merge. Please try again.");
+    } finally {
+      setIsConverting(false);
+    }
   };
 
   return (
@@ -227,15 +270,15 @@ export default function EditSignModule() {
         onClose={() => setIsModalOpen(false)}
         onFileSelect={handleFileSelect}
         allowedFileTypes={
-          selectedTool === "compress" || selectedTool === "ocr" 
-            ? ["application/pdf"] 
+          selectedTool === "compress" || selectedTool === "ocr"
+            ? ["application/pdf"]
             : undefined
         }
         submitButtonText={
-          selectedTool === "compress" 
-            ? "Compress" 
-            : selectedTool === "ocr" 
-            ? "OCR" 
+          selectedTool === "compress"
+            ? "Compress"
+            : selectedTool === "ocr"
+            ? "OCR"
             : "Upload"
         }
       />
@@ -259,6 +302,13 @@ export default function EditSignModule() {
         isOpen={!!conversionError}
         onClose={handleCloseResult}
         error={conversionError || ""}
+      />
+
+      {/* Merge Modal */}
+      <MergeModal
+        isOpen={isMergeModalOpen}
+        onClose={() => setIsMergeModalOpen(false)}
+        onMerge={handleMerge}
       />
     </div>
   );
