@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PDF Guru Clone
+
+A take-home project clone of **PDF Guru** developed for **PORTALAB IT**.
+
+![PDF Guru Clone](public/og-image.png)
+
+## About
+
+This project is a functional clone of PDF Guru that demonstrates modern web development capabilities with PDF management features. Built as a technical assessment for PORTALAB IT, it showcases:
+
+- **Edit & Sign PDFs**: Full-featured PDF editor with annotation, compression, splitting, merging, and signature capabilities
+- **PDF Converter**: Convert PDFs to various formats (Word, Image, Excel, etc.) and vice versa
+- **AI-Powered Summarizer**: Extract key insights and summaries from PDF documents using advanced AI
+
+## Tech Stack
+
+**Frontend:**
+
+- **Framework**: Next.js with App Router
+- **Language**: TypeScript
+- **UI**: React, Tailwind CSS
+- **PDF Processing**: Nutrient (PSPDFKit) Web SDK
+- **Internationalization**: next-intl (English & French)
+
+**Backend:**
+
+- **Framework**: Express.js
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT & bcrypt
+- **AI**: OpenAI API
+- **File Upload**: Multer
+- **PDF Processing**: Convert API
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- Yarn
+
+### Installation
+
+**Frontend:**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn # Install dependencies
+
+yarn dev # Run development server
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Note that PSPDFKit doesn't require an API key.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) to view the frontend app.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Backend:**
 
-## Learn More
+Check [this repo](https://github.com/sirine-jnayeh/pdfguru-clone-take-home-project-express) for the backend's code.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+yarn # Install dependencies
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Create a .env file in the root directory based on .env.example
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+npx prisma migrate dev # Run database migrations
 
-## Deploy on Vercel
+npx prisma generate # Generate Prisma client
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+yarn dev # Run development server
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Note that Both OPENAI_API_KEY and CONVERT_API_KEY can be generated from their respective developer platforms.
+
+Open [http://localhost:4000](http://localhost:4000) to view the backend app.
+
+## Project Structure
+
+**Frontend:**
+
+```
+/
+├── app/                   # Next.js app directory
+│   ├── [locale]/          # Internationalized routes
+│   │   ├── converter/     # PDF converter module
+│   │   ├── edit-sign/     # PDF editor module
+│   │   └── summarizer/    # AI summarizer module
+│   └── layout.tsx         # Root layout
+├── components/            # React components
+├── contexts/              # React contexts
+├── lib/                   # Utilities and helpers
+├── messages/              # i18n translations
+├── public/                # Static assets
+└── types/                 # TypeScript type definitions
+```
+
+**Backend:**
+
+```
+/
+├── src/                   # Source code directory
+│   ├── index.ts           # Express server entry point
+│   ├── auth.ts            # Authentication routes & logic
+│   ├── converter.ts       # PDF converter API routes
+│   ├── summarizer.ts      # AI summarizer API routes
+│   ├── db.ts              # Prisma database client
+│   └── generated/         # Generated Prisma client
+├── prisma/                # Database configuration
+│   ├── schema.prisma      # Prisma schema definition
+│   └── migrations/        # Database migrations
+├── uploads/               # Uploaded PDF files storage
+```
+
+## UI Demos
+
+
