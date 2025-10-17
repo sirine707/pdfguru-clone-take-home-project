@@ -4,6 +4,9 @@ import { useState } from "react";
 import Header from "./Header";
 import FileUploadModal from "./FileUploadModal";
 import FormatSelectionModal from "./FormatSelectionModal";
+import LoadingModal from "./LoadingModal";
+import SuccessModal from "./SuccessModal";
+import ErrorModal from "./ErrorModal";
 
 interface ConversionTool {
   id: string;
@@ -472,12 +475,6 @@ const otherFormatsTools: ConversionTool[] = [
   },
 ];
 
-const allTools = [
-  ...convertFromPdfTools,
-  ...convertToPdfTools,
-  ...otherFormatsTools,
-];
-
 const pdfConverterAllowedMimeTypes = new Set<string>([
   "application/pdf",
   ...convertToPdfTools
@@ -735,161 +732,25 @@ export default function ConverterModule() {
       />
 
       {/* Loading Modal */}
-      {isConverting && (
-        <div className="fixed inset-0 bg-[#000000aa] bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
-            <div className="flex flex-col items-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-500 mb-4"></div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Converting...
-              </h3>
-              <p className="text-gray-600 text-center">
-                Please wait while we convert your file
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <LoadingModal isOpen={isConverting} />
 
       {/* Success Modal */}
-      {conversionResult && (
-        <div className="fixed inset-0 bg-[#000000aa] bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Conversion Successful!
-              </h2>
-              <button
-                onClick={handleCloseResult}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div className="mb-6">
-              <div className="flex items-center justify-center mb-4">
-                <svg
-                  className="w-16 h-16 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-
-              <p className="text-center text-gray-700 mb-4">
-                Your file has been converted successfully!
-              </p>
-
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <p className="text-sm text-gray-600 mb-1">File name:</p>
-                <p className="text-gray-900 font-medium break-all">
-                  {conversionResult.fileName}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <button
-                onClick={() =>
-                  downloadFile(
-                    conversionResult.fileUrl,
-                    conversionResult.fileName
-                  )
-                }
-                className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md font-medium transition-colors"
-              >
-                Download Again
-              </button>
-              <button
-                onClick={handleCloseResult}
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md font-medium transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SuccessModal
+        isOpen={!!conversionResult}
+        onClose={handleCloseResult}
+        onDownload={() =>
+          conversionResult &&
+          downloadFile(conversionResult.fileUrl, conversionResult.fileName)
+        }
+        result={conversionResult || { fileUrl: "", fileName: "" }}
+      />
 
       {/* Error Modal */}
-      {conversionError && (
-        <div className="fixed inset-0 bg-[#000000aa] bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Conversion Failed
-              </h2>
-              <button
-                onClick={handleCloseResult}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div className="mb-6">
-              <div className="flex items-center justify-center mb-4">
-                <svg
-                  className="w-16 h-16 text-red-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-
-              <p className="text-center text-gray-700 mb-4">
-                {conversionError}
-              </p>
-            </div>
-
-            <button
-              onClick={handleCloseResult}
-              className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md font-medium transition-colors"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <ErrorModal
+        isOpen={!!conversionError}
+        onClose={handleCloseResult}
+        error={conversionError || ""}
+      />
     </div>
   );
 }

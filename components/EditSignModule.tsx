@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "./Header";
 import FileUploadModal from "./FileUploadModal";
+import LoadingModal from "./LoadingModal";
+import SuccessModal from "./SuccessModal";
+import ErrorModal from "./ErrorModal";
 import { useFile } from "../contexts/FileContext";
 
 interface Tool {
@@ -53,6 +56,12 @@ export default function EditSignModule() {
   const [selectedTool, setSelectedTool] = useState<string | undefined>(
     undefined
   );
+  const [isConverting, setIsConverting] = useState(false);
+  const [conversionResult, setConversionResult] = useState<{
+    fileUrl: string;
+    fileName: string;
+  } | null>(null);
+  const [conversionError, setConversionError] = useState<string | null>(null);
 
   const handleToolClick = (toolId: string) => {
     setSelectedTool(toolId);
@@ -100,21 +109,89 @@ export default function EditSignModule() {
         router.push(`/edit-sign/editor?tool=${toolId}`);
         break;
 
+      case "compress":
+        setIsModalOpen(true);
+        break;
+
       case "merge":
         alert("Merge PDF - Not implemented yet");
         break;
+
       case "ocr":
-        alert("OCR PDF - Not implemented yet");
+        setIsModalOpen(true);
         break;
+
       default:
         setIsModalOpen(true);
         break;
     }
   };
 
-  const handleFileSelect = (file: File) => {
-    setSelectedFile(file);
-    router.push(`/edit-sign/editor?tool=${selectedTool}`);
+  const handleFileSelect = async (file: File) => {
+    switch (selectedTool) {
+      case "compress":
+        await handleFormatSelect(file, "compress");
+        break;
+      case "ocr":
+        await handleFormatSelect(file, "ocr");
+        break;
+      default:
+        setSelectedFile(file);
+        router.push(`/edit-sign/editor?tool=${selectedTool}`);
+        break;
+    }
+  };
+
+  const handleFormatSelect = async (file: File, toolId: string) => {
+    setIsConverting(true);
+    setConversionError(null);
+    setIsModalOpen(false);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(
+        `http://localhost:4000/converter/convert/${toolId}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success && data.result) {
+        setConversionResult(data.result);
+        // Automatically download the file
+        downloadFile(data.result.fileUrl, data.result.fileName);
+      } else {
+        setConversionError(
+          data.message || `${toolId === "compress" ? "Compression" : "OCR"} failed. Please try again.`
+        );
+      }
+    } catch (error) {
+      console.error(`${toolId} error:`, error);
+      setConversionError(
+        `An error occurred during ${toolId === "compress" ? "compression" : "OCR"}. Please try again.`
+      );
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  const downloadFile = (url: string, filename: string) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleCloseResult = () => {
+    setConversionResult(null);
+    setConversionError(null);
   };
 
   return (
@@ -149,6 +226,39 @@ export default function EditSignModule() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onFileSelect={handleFileSelect}
+        allowedFileTypes={
+          selectedTool === "compress" || selectedTool === "ocr" 
+            ? ["application/pdf"] 
+            : undefined
+        }
+        submitButtonText={
+          selectedTool === "compress" 
+            ? "Compress" 
+            : selectedTool === "ocr" 
+            ? "OCR" 
+            : "Upload"
+        }
+      />
+
+      {/* Loading Modal */}
+      <LoadingModal isOpen={isConverting} />
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={!!conversionResult}
+        onClose={handleCloseResult}
+        onDownload={() =>
+          conversionResult &&
+          downloadFile(conversionResult.fileUrl, conversionResult.fileName)
+        }
+        result={conversionResult || { fileUrl: "", fileName: "" }}
+      />
+
+      {/* Error Modal */}
+      <ErrorModal
+        isOpen={!!conversionError}
+        onClose={handleCloseResult}
+        error={conversionError || ""}
       />
     </div>
   );
