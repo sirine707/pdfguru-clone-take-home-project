@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Fetch user profile using token
   const fetchUserProfile = async (token: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/profile`, {
+      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -81,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/signin`, {
+      const response = await fetch(`${API_BASE_URL}/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/signup`, {
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

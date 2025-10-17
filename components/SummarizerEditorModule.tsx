@@ -1,21 +1,143 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
 import Header from "./Header";
 import { useFile } from "../contexts/FileContext";
 
 export default function SummarizerEditorModule() {
   const [isLoading, setIsLoading] = useState(true);
+  const [threadId, setThreadId] = useState<string | null>(null);
+  const [chatHistory, setChatHistory] = useState<
+    Array<{ type: "user" | "assistant"; content: string }>
+  >([]);
+  const [userMessage, setUserMessage] = useState("");
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
   const { selectedFile } = useFile();
   const router = useRouter();
+  const hasInitialized = useRef(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const pdfObjectUrl = useMemo(() => {
+    return selectedFile ? URL.createObjectURL(selectedFile) : null;
+  }, [selectedFile]);
 
   useEffect(() => {
-    // Simulate loading the PDF
-    setTimeout(() => {
+    if (selectedFile && !hasInitialized.current) {
+      hasInitialized.current = true;
+      initializeSummarizer();
+    }
+  }, [selectedFile]);
+
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }, [chatHistory]);
+
+  // Function to clean up citation references
+  const cleanResponse = (text: string) => {
+    return text.replace(/【\d+:\d+†[^】]+】/g, "");
+  };
+
+  const initializeSummarizer = async () => {
+    if (!selectedFile) return;
+
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("pdf", selectedFile);
+
+      const response = await fetch(
+        "http://localhost:4000/summarizer/initialize",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to initialize summarizer");
+      }
+
+      const data = await response.json();
+      setThreadId(data.threadId);
+
+      // Add the summary to chat history with cleaned content
+      setChatHistory([
+        {
+          type: "assistant",
+          content: cleanResponse(data.summary),
+        },
+      ]);
+    } catch (error) {
+      console.error("Error initializing summarizer:", error);
+      setChatHistory([
+        {
+          type: "assistant",
+          content:
+            "Sorry, there was an error processing your PDF. Please try again.",
+        },
+      ]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
-  }, []);
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!userMessage.trim() || !threadId || isSendingMessage) return;
+
+    const userQuestion = userMessage.trim();
+    setUserMessage("");
+    setIsSendingMessage(true);
+
+    // Add user message to chat history
+    setChatHistory((prev) => [
+      ...prev,
+      { type: "user", content: userQuestion },
+    ]);
+
+    try {
+      const response = await fetch("http://localhost:4000/summarizer/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          threadId,
+          question: userQuestion,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      const data = await response.json();
+
+      // Add assistant response to chat history with cleaned content
+      setChatHistory((prev) => [
+        ...prev,
+        { type: "assistant", content: cleanResponse(data.answer) },
+      ]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          type: "assistant",
+          content:
+            "Sorry, there was an error processing your question. Please try again.",
+        },
+      ]);
+    } finally {
+      setIsSendingMessage(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -62,29 +184,136 @@ export default function SummarizerEditorModule() {
               </div>
             </div>
           ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left side - PDF Viewer */}
-            <div className="bg-white rounded-lg border border-gray-200 h-[80vh] flex flex-col">
-              {/* Header */}
-              <div className="p-4 border-b border-gray-200">
-                <h2 className="text-lg font-bold text-gray-900">
-                  Document Preview
-                </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left side - PDF Viewer */}
+              <div className="bg-white rounded-lg border border-gray-200 h-[80vh] flex flex-col">
+                {/* Header */}
+                <div className="p-4 border-b border-gray-200">
+                  <h2 className="text-lg font-bold text-gray-900">
+                    Document Preview
+                  </h2>
+                </div>
+
+                {/* PDF Content */}
+                <div className="flex-1 bg-gray-50 rounded-b border border-gray-300">
+                  {pdfObjectUrl ? (
+                    <iframe
+                      src={pdfObjectUrl}
+                      className="w-full h-full rounded-b"
+                      title="PDF Document"
+                    />
+                  ) : (
+                    <div className="h-full flex items-center justify-center">
+                      <div className="text-center text-gray-500">
+                        <svg
+                          className="mx-auto h-16 w-16 mb-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        <p className="text-lg font-medium">No PDF Selected</p>
+                        <p className="text-sm mt-2 text-gray-400">
+                          Please upload a PDF file to view it here
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* PDF Content */}
-              <div className="flex-1 bg-gray-50 rounded-b border border-gray-300">
-                {selectedFile ? (
-                  <iframe
-                    src={URL.createObjectURL(selectedFile)}
-                    className="w-full h-full rounded-b"
-                    title="PDF Document"
-                  />
-                ) : (
-                  <div className="h-full flex items-center justify-center">
-                    <div className="text-center text-gray-500">
+              {/* Right side - Summary Panel */}
+              <div className="bg-white rounded-lg border border-gray-200 h-[80vh] flex flex-col">
+                {/* Header with P icon and title */}
+                <div className="p-4 border-b border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-gray-900">
+                      AI Summary
+                    </h2>
+                  </div>
+                </div>
+
+                 {/* Chat History */}
+                 <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto">
+                  {chatHistory.length === 0 ? (
+                    <div className="text-center text-gray-500 py-8">
+                      <p className="text-sm">
+                        Start a conversation about your PDF
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {chatHistory.map((message, index) => (
+                        <div
+                          key={index}
+                          className={`flex ${
+                            message.type === "user"
+                              ? "justify-end"
+                              : "justify-start"
+                          }`}
+                        >
+                          <div
+                            className={`max-w-[80%] p-3 rounded-lg ${
+                              message.type === "user"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-100 text-gray-900"
+                            }`}
+                          >
+                            {message.type === "assistant" ? (
+                              <div className="text-sm prose prose-sm max-w-none [&>*]:mb-4 [&>*:last-child]:mb-0">
+                                <ReactMarkdown>{message.content}</ReactMarkdown>
+                              </div>
+                            ) : (
+                              <p className="text-sm whitespace-pre-wrap">
+                                <ReactMarkdown>{message.content}</ReactMarkdown>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {isSendingMessage && (
+                        <div className="flex justify-start">
+                          <div className="bg-gray-100 p-3 rounded-lg">
+                            <div className="flex items-center space-x-2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                              <span className="text-sm text-gray-600">
+                                Thinking...
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Message Input */}
+                <div className="p-4 border-t border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="Write your message here"
+                      value={userMessage}
+                      onChange={(e) => setUserMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                      disabled={isSendingMessage || !threadId}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                    />
+                    <button
+                      onClick={sendMessage}
+                      disabled={
+                        isSendingMessage || !threadId || !userMessage.trim()
+                      }
+                      className="w-8 h-8 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center transition-colors"
+                    >
                       <svg
-                        className="mx-auto h-16 w-16 mb-4"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -93,103 +322,16 @@ export default function SummarizerEditorModule() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
                         />
                       </svg>
-                      <p className="text-lg font-medium">No PDF Selected</p>
-                      <p className="text-sm mt-2 text-gray-400">
-                        Please upload a PDF file to view it here
-                      </p>
-                    </div>
+                    </button>
                   </div>
-                )}
-              </div>
-            </div>
-
-            {/* Right side - Summary Panel */}
-            <div className="bg-white rounded-lg border border-gray-200 h-[80vh] flex flex-col">
-              {/* Header with P icon and title */}
-              <div className="p-4 border-b border-gray-200">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-bold text-gray-900">
-                    AI Summary
-                  </h2>
-                </div>
-              </div>
-
-              {/* Summary Content */}
-              <div className="flex-1 p-4 overflow-y-auto">
-                <div className="space-y-4">
-                  {/* Professional Experience Section */}
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2">
-                      Professional Experience:
-                    </h3>
-                    <ul className="space-y-1 text-sm text-gray-700">
-                      <li>
-                        • Developed real-time product search features and
-                        containerized applications for deployment.
-                      </li>
-                      <li>
-                        • Contributed to CRM and microservices projects,
-                        improving efficiency and performance.
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Skills Section */}
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2">Skills:</h3>
-                    <ul className="space-y-1 text-sm text-gray-700">
-                      <li>
-                        • Proficient in Python, Docker, AWS, and various
-                        frameworks like Django and React.
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Projects Section */}
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2">Projects:</h3>
-                    <ul className="space-y-1 text-sm text-gray-700">
-                      <li>
-                        • Created AI-powered platforms and real-time chat
-                        applications.
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Message Input */}
-              <div className="p-4 border-t border-gray-200">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="Write your message here"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  />
-                  <button className="w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center transition-colors">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
-                      />
-                    </svg>
-                  </button>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       )}
     </div>
   );
