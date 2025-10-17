@@ -14,8 +14,35 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PDF Guru Clone (Take-Home Project)",
-  description: "Your Complete PDF Solution",
+  title: {
+    default: "PDF Guru - Your Complete PDF Solution",
+    template: "%s | PDF Guru",
+  },
+  description: "Edit, convert, and summarize PDFs with AI. Powerful PDF tools for editing, annotating, compressing, converting, splitting, merging, and AI-powered summarization.",
+  applicationName: "PDF Guru",
+  keywords: [
+    'PDF editor',
+    'PDF converter',
+    'PDF summarizer',
+    'edit PDF',
+    'convert PDF',
+    'AI PDF',
+    'PDF tools',
+    'document management',
+    'PDF to Word',
+    'PDF to Image',
+    'compress PDF',
+    'merge PDF',
+    'split PDF',
+  ],
+  authors: [{ name: 'PDF Guru' }],
+  creator: 'PDF Guru',
+  publisher: 'PDF Guru',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
