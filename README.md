@@ -69,7 +69,7 @@ npx prisma generate # Generate Prisma client
 yarn dev # Run development server
 ```
 
-Note that Both OPENAI_API_KEY and CONVERT_API_KEY can be generated from their respective developer platforms.
+Note that Both OPENAI_API_KEY and CONVERT_API_KEY environment variables can be generated from their respective developer platforms.
 
 Open [http://localhost:4000](http://localhost:4000) to view the backend app.
 
@@ -110,6 +110,9 @@ Open [http://localhost:4000](http://localhost:4000) to view the backend app.
 ├── uploads/               # Uploaded PDF files storage
 ```
 
-## UI Demos
+## Demo
 
+[![Watch Demo](https://img.youtube.com/vi/E8hh81jDVac/0.jpg)](https://youtu.be/E8hh81jDVac)
+
+[Watch Demo Video](https://youtu.be/E8hh81jDVac)
 
