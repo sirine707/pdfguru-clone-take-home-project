@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Header from "./Header";
 import FileUploadModal from "./FileUploadModal";
+import FormatSelectionModal from "./FormatSelectionModal";
 
 interface ConversionTool {
   id: string;
@@ -19,12 +20,14 @@ const convertFromPdfTools: ConversionTool[] = [
     name: "PDF Converter",
     icon: "📄",
     bgColor: "bg-red-100",
+    allowedFileTypes: [],
   },
   {
     id: "pdf-to-word",
     name: "PDF to Word",
     icon: "📝",
     bgColor: "bg-blue-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-png",
@@ -33,81 +36,111 @@ const convertFromPdfTools: ConversionTool[] = [
     bgColor: "bg-orange-100",
     allowedFileTypes: ["application/pdf"],
   },
-  { id: "pdf-to-jpg", name: "PDF to JPG", icon: "🖼️", bgColor: "bg-pink-100" },
+  {
+    id: "pdf-to-jpg",
+    name: "PDF to JPG",
+    icon: "🖼️",
+    bgColor: "bg-pink-100",
+    allowedFileTypes: ["application/pdf"],
+  },
   {
     id: "pdf-to-excel",
     name: "PDF to Excel",
     icon: "📊",
     bgColor: "bg-green-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-pptx",
     name: "PDF to PPTX",
     icon: "📽️",
     bgColor: "bg-orange-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-azw3",
     name: "PDF to AZW3",
     icon: "📚",
     bgColor: "bg-yellow-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-docx",
     name: "PDF to DOCX",
     icon: "📄",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-mobi",
     name: "PDF to MOBI",
     icon: "📱",
     bgColor: "bg-blue-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-text",
     name: "PDF to Text",
     icon: "📝",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-tiff",
     name: "PDF to TIFF",
     icon: "🖼️",
     bgColor: "bg-teal-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-dxf",
     name: "PDF to DXF",
     icon: "🎯",
     bgColor: "bg-orange-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-html",
     name: "PDF to HTML",
     icon: "🌐",
     bgColor: "bg-green-100",
+    allowedFileTypes: ["application/pdf"],
   },
-  { id: "pdf-to-eps", name: "PDF to EPS", icon: "📐", bgColor: "bg-blue-100" },
+  {
+    id: "pdf-to-eps",
+    name: "PDF to EPS",
+    icon: "📐",
+    bgColor: "bg-blue-100",
+    allowedFileTypes: ["application/pdf"],
+  },
   {
     id: "pdf-to-webp",
     name: "PDF to WebP",
     icon: "📷",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-epub",
     name: "PDF to EPUB",
     icon: "📖",
     bgColor: "bg-green-100",
+    allowedFileTypes: ["application/pdf"],
   },
   {
     id: "pdf-to-image",
     name: "PDF to Image",
     icon: "🖼️",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["application/pdf"],
   },
-  { id: "pdf-to-svg", name: "PDF to SVG", icon: "🎨", bgColor: "bg-pink-100" },
+  {
+    id: "pdf-to-svg",
+    name: "PDF to SVG",
+    icon: "🎨",
+    bgColor: "bg-pink-100",
+    allowedFileTypes: ["application/pdf"],
+  },
 ];
 
 // Convert to PDF tools
@@ -117,12 +150,17 @@ const convertToPdfTools: ConversionTool[] = [
     name: "PDF Converter",
     icon: "📄",
     bgColor: "bg-pink-100",
+    allowedFileTypes: [],
   },
   {
     id: "word-to-pdf",
     name: "Word to PDF",
     icon: "📝",
     bgColor: "bg-blue-100",
+    allowedFileTypes: [
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ],
   },
   {
     id: "png-to-pdf",
@@ -131,147 +169,321 @@ const convertToPdfTools: ConversionTool[] = [
     bgColor: "bg-orange-100",
     allowedFileTypes: ["image/png"],
   },
-  { id: "jpg-to-pdf", name: "JPG to PDF", icon: "🖼️", bgColor: "bg-pink-100" },
+  {
+    id: "jpg-to-pdf",
+    name: "JPG to PDF",
+    icon: "🖼️",
+    bgColor: "bg-pink-100",
+    allowedFileTypes: ["image/jpeg"],
+  },
   {
     id: "excel-to-pdf",
     name: "Excel to PDF",
     icon: "📊",
     bgColor: "bg-green-100",
+    allowedFileTypes: [
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ],
   },
   {
     id: "pptx-to-pdf",
     name: "PPTX to PDF",
     icon: "📽️",
     bgColor: "bg-orange-100",
+    allowedFileTypes: [
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ],
   },
   {
     id: "azw3-to-pdf",
     name: "AZW3 to PDF",
     icon: "📚",
     bgColor: "bg-yellow-100",
+    allowedFileTypes: ["application/vnd.amazon.ebook"],
   },
-  { id: "csv-to-pdf", name: "CSV to PDF", icon: "📄", bgColor: "bg-blue-100" },
+  {
+    id: "csv-to-pdf",
+    name: "CSV to PDF",
+    icon: "📄",
+    bgColor: "bg-blue-100",
+    allowedFileTypes: ["text/csv"],
+  },
   {
     id: "djvu-to-pdf",
     name: "DjVu to PDF",
     icon: "📎",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["image/vnd.djvu", "image/x-djvu"],
   },
   {
     id: "docx-to-pdf",
     name: "DOCX to PDF",
     icon: "📄",
     bgColor: "bg-pink-100",
+    allowedFileTypes: [
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ],
   },
-  { id: "dwg-to-pdf", name: "DWG to PDF", icon: "➕", bgColor: "bg-cyan-100" },
+  {
+    id: "dwg-to-pdf",
+    name: "DWG to PDF",
+    icon: "➕",
+    bgColor: "bg-cyan-100",
+    allowedFileTypes: ["image/vnd.dwg", "application/acad"],
+  },
   {
     id: "dxf-to-pdf",
     name: "DXF to PDF",
     icon: "⚙️",
     bgColor: "bg-orange-100",
+    allowedFileTypes: ["application/dxf", "image/vnd.dxf"],
   },
-  { id: "eps-to-pdf", name: "EPS to PDF", icon: "👥", bgColor: "bg-blue-100" },
+  {
+    id: "eps-to-pdf",
+    name: "EPS to PDF",
+    icon: "👥",
+    bgColor: "bg-blue-100",
+    allowedFileTypes: ["application/postscript"],
+  },
   {
     id: "epub-to-pdf",
     name: "EPUB to PDF",
     icon: "✅",
     bgColor: "bg-green-100",
+    allowedFileTypes: ["application/epub+zip"],
   },
   {
     id: "image-to-pdf",
     name: "Image to PDF",
     icon: "🖼️",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
   },
   {
     id: "html-to-pdf",
     name: "HTML to PDF",
     icon: "🌐",
     bgColor: "bg-green-100",
+    allowedFileTypes: ["text/html"],
   },
   {
     id: "mobi-to-pdf",
     name: "MOBI to PDF",
     icon: "📱",
     bgColor: "bg-blue-100",
+    allowedFileTypes: ["application/x-mobipocket-ebook"],
   },
-  { id: "svg-to-pdf", name: "SVG to PDF", icon: "🎨", bgColor: "bg-pink-100" },
+  {
+    id: "svg-to-pdf",
+    name: "SVG to PDF",
+    icon: "🎨",
+    bgColor: "bg-pink-100",
+    allowedFileTypes: ["image/svg+xml"],
+  },
   {
     id: "text-to-pdf",
     name: "Text to PDF",
     icon: "📝",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["text/plain"],
   },
   {
     id: "tiff-to-pdf",
     name: "TIFF to PDF",
     icon: "🖼️",
     bgColor: "bg-blue-100",
+    allowedFileTypes: ["image/tiff"],
   },
   {
     id: "webp-to-pdf",
     name: "WebP to PDF",
     icon: "📷",
     bgColor: "bg-pink-100",
+    allowedFileTypes: ["image/webp"],
   },
   {
     id: "avif-to-pdf",
     name: "Avif to PDF",
     icon: "🎬",
     bgColor: "bg-orange-100",
+    allowedFileTypes: ["image/avif"],
   },
   {
     id: "heic-to-pdf",
     name: "Heic to PDF",
     icon: "📱",
     bgColor: "bg-pink-100",
+    allowedFileTypes: ["image/heic", "image/heif"],
   },
   {
     id: "cbr-to-pdf",
     name: "CBR to PDF",
     icon: "📚",
     bgColor: "bg-purple-100",
+    allowedFileTypes: ["application/x-cbr"],
   },
-  { id: "rtf-to-pdf", name: "RTF to PDF", icon: "📄", bgColor: "bg-pink-100" },
+  {
+    id: "rtf-to-pdf",
+    name: "RTF to PDF",
+    icon: "📄",
+    bgColor: "bg-pink-100",
+    allowedFileTypes: ["application/rtf"],
+  },
   {
     id: "xps-to-pdf",
     name: "XPS to PDF",
     icon: "📄",
     bgColor: "bg-orange-100",
+    allowedFileTypes: ["application/vnd.ms-xpsdocument"],
   },
 ];
 
 // Other Formats tools
 const otherFormatsTools: ConversionTool[] = [
   {
-    id: "compress-pdf",
-    name: "Compress PDF",
-    icon: "📦",
-    bgColor: "bg-blue-100",
-  },
-  { id: "merge-pdf", name: "Merge PDF", icon: "📄", bgColor: "bg-green-100" },
-  { id: "split-pdf", name: "Split PDF", icon: "✂️", bgColor: "bg-orange-100" },
-  {
-    id: "rotate-pdf",
-    name: "Rotate PDF",
-    icon: "🔄",
-    bgColor: "bg-purple-100",
-  },
-  {
-    id: "watermark-pdf",
-    name: "Watermark PDF",
-    icon: "💧",
+    id: "avif-to-jpg",
+    name: "Avif to JPG",
+    icon: "🖼️",
     bgColor: "bg-cyan-100",
+    allowedFileTypes: ["image/avif"],
   },
-  { id: "protect-pdf", name: "Protect PDF", icon: "🔒", bgColor: "bg-red-100" },
-  { id: "unlock-pdf", name: "Unlock PDF", icon: "🔓", bgColor: "bg-green-100" },
   {
-    id: "repair-pdf",
-    name: "Repair PDF",
-    icon: "🔧",
+    id: "avif-to-png",
+    name: "AVIF to PNG",
+    icon: "🖼️",
+    bgColor: "bg-purple-100",
+    allowedFileTypes: ["image/avif"],
+  },
+  {
+    id: "webp-to-png",
+    name: "WEBP to PNG",
+    icon: "📷",
+    bgColor: "bg-cyan-100",
+    allowedFileTypes: ["image/webp"],
+  },
+  {
+    id: "epub-to-mobi",
+    name: "Epub to MOBI",
+    icon: "📖",
+    bgColor: "bg-cyan-100",
+    allowedFileTypes: ["application/epub+zip"],
+  },
+  {
+    id: "csv-to-excel",
+    name: "CSV to Excel",
+    icon: "📊",
+    bgColor: "bg-cyan-100",
+    allowedFileTypes: ["text/csv"],
+  },
+  {
+    id: "dwg-to-dxf",
+    name: "DWG to DXF",
+    icon: "🔲",
+    bgColor: "bg-purple-100",
+    allowedFileTypes: ["image/vnd.dwg", "application/acad"],
+  },
+  {
+    id: "gif-to-jpg",
+    name: "GIF to JPG",
+    icon: "📷",
+    bgColor: "bg-purple-100",
+    allowedFileTypes: ["image/gif"],
+  },
+  {
+    id: "gif-to-png",
+    name: "GIF to PNG",
+    icon: "📷",
+    bgColor: "bg-orange-100",
+    allowedFileTypes: ["image/gif"],
+  },
+  {
+    id: "jpeg-to-jpg",
+    name: "JPEG to JPG",
+    icon: "🖼️",
+    bgColor: "bg-orange-100",
+    allowedFileTypes: ["image/jpeg"],
+  },
+  {
+    id: "heic-to-jpg",
+    name: "Heic to JPG",
+    icon: "🖼️",
+    bgColor: "bg-purple-100",
+    allowedFileTypes: ["image/heic", "image/heif"],
+  },
+  {
+    id: "heic-to-png",
+    name: "Heic to PNG",
+    icon: "🖼️",
+    bgColor: "bg-orange-100",
+    allowedFileTypes: ["image/heic", "image/heif"],
+  },
+  {
+    id: "jpg-to-png",
+    name: "JPG to PNG",
+    icon: "🖼️",
     bgColor: "bg-yellow-100",
+    allowedFileTypes: ["image/jpeg"],
+  },
+  {
+    id: "png-to-jpg",
+    name: "PNG to JPG",
+    icon: "🖼️",
+    bgColor: "bg-yellow-100",
+    allowedFileTypes: ["image/png"],
+  },
+  {
+    id: "svg-to-jpg",
+    name: "SVG to JPG",
+    icon: "🖼️",
+    bgColor: "bg-orange-100",
+    allowedFileTypes: ["image/svg+xml"],
+  },
+  {
+    id: "webp-to-jpg",
+    name: "WEBP to JPG",
+    icon: "📷",
+    bgColor: "bg-cyan-100",
+    allowedFileTypes: ["image/webp"],
+  },
+  {
+    id: "word-to-jpg",
+    name: "Word to JPG",
+    icon: "📄",
+    bgColor: "bg-blue-100",
+    allowedFileTypes: [
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ],
+  },
+  {
+    id: "png-to-webp",
+    name: "PNG to WEBP",
+    icon: "🖼️",
+    bgColor: "bg-cyan-100",
+    allowedFileTypes: ["image/png"],
+  },
+  {
+    id: "svg-to-png",
+    name: "SVG to PNG",
+    icon: "🌊",
+    bgColor: "bg-orange-100",
+    allowedFileTypes: ["image/svg+xml"],
   },
 ];
+
+const allTools = [
+  ...convertFromPdfTools,
+  ...convertToPdfTools,
+  ...otherFormatsTools,
+];
+
+const pdfConverterAllowedMimeTypes = new Set<string>([
+  "application/pdf",
+  ...convertToPdfTools
+    .map((tool) => tool.allowedFileTypes || ([] as string[]))
+    .flat(),
+]);
 
 export default function ConverterModule() {
   const [activeTab, setActiveTab] = useState<"from" | "to" | "other">("from");
@@ -283,6 +495,8 @@ export default function ConverterModule() {
     fileName: string;
   } | null>(null);
   const [conversionError, setConversionError] = useState<string | null>(null);
+  const [isFormatModalOpen, setIsFormatModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const getCurrentTools = () => {
     switch (activeTab) {
@@ -298,13 +512,13 @@ export default function ConverterModule() {
   };
 
   const handleToolClick = (tool: ConversionTool) => {
-    // Only open modal for pdf-to-png and png-to-pdf for now
-    if (tool.id === "pdf-to-png" || tool.id === "png-to-pdf") {
-      setSelectedTool(tool);
-      setIsModalOpen(true);
-      setConversionResult(null);
-      setConversionError(null);
-    }
+    // Open modal if tool has allowedFileTypes defined
+    // if (tool.allowedFileTypes && tool.allowedFileTypes.length > 0) {
+    setSelectedTool(tool);
+    setIsModalOpen(true);
+    setConversionResult(null);
+    setConversionError(null);
+    // }
   };
 
   const handleFileSelect = async (file: File) => {
@@ -314,12 +528,36 @@ export default function ConverterModule() {
     setConversionError(null);
     setIsModalOpen(false);
 
+    let toolId = selectedTool.id;
+
+    if (toolId === "pdf-converter") {
+      if (file.type === "application/pdf") {
+        // Show format selection modal for PDF files
+        setSelectedFile(file);
+        setIsFormatModalOpen(true);
+        setIsConverting(false);
+        return;
+      }
+
+      const tool = convertToPdfTools.find((tool) =>
+        tool.allowedFileTypes?.includes(file.type)
+      );
+
+      if (tool) {
+        toolId = tool.id;
+      } else {
+        setConversionError("Invalid file type. Please select a valid file.");
+        setIsConverting(false);
+        return;
+      }
+    }
+
     try {
       const formData = new FormData();
       formData.append("file", file);
 
       const response = await fetch(
-        `http://localhost:4000/converter/convert/${selectedTool.id}`,
+        `http://localhost:4000/converter/convert/${toolId}`,
         {
           method: "POST",
           body: formData,
@@ -333,7 +571,9 @@ export default function ConverterModule() {
         // Automatically download the file
         downloadFile(data.result.fileUrl, data.result.fileName);
       } else {
-        setConversionError("Conversion failed. Please try again.");
+        setConversionError(
+          data.message || "Conversion failed. Please try again."
+        );
       }
     } catch (error) {
       console.error("Conversion error:", error);
@@ -362,6 +602,52 @@ export default function ConverterModule() {
   const handleCloseResult = () => {
     setConversionResult(null);
     setConversionError(null);
+  };
+
+  const handleFormatSelect = async (format: string) => {
+    if (!selectedFile) return;
+
+    setIsConverting(true);
+    setConversionError(null);
+    setIsFormatModalOpen(false);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const response = await fetch(
+        `http://localhost:4000/converter/convert/pdf-to-${format}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success && data.result) {
+        setConversionResult(data.result);
+        // Automatically download the file
+        downloadFile(data.result.fileUrl, data.result.fileName);
+      } else {
+        setConversionError(
+          data.message || "Conversion failed. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Conversion error:", error);
+      setConversionError(
+        "An error occurred during conversion. Please try again."
+      );
+    } finally {
+      setIsConverting(false);
+      setSelectedFile(null);
+    }
+  };
+
+  const handleCloseFormatModal = () => {
+    setIsFormatModalOpen(false);
+    setSelectedFile(null);
   };
 
   return (
@@ -433,8 +719,19 @@ export default function ConverterModule() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onFileSelect={handleFileSelect}
-        allowedFileTypes={selectedTool?.allowedFileTypes}
+        allowedFileTypes={
+          selectedTool?.id === "pdf-converter"
+            ? Array.from(pdfConverterAllowedMimeTypes)
+            : selectedTool?.allowedFileTypes
+        }
         submitButtonText="Convert"
+      />
+
+      {/* Format Selection Modal */}
+      <FormatSelectionModal
+        isOpen={isFormatModalOpen}
+        onClose={handleCloseFormatModal}
+        onFormatSelect={handleFormatSelect}
       />
 
       {/* Loading Modal */}
