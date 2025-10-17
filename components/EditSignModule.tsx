@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "./Header";
+import FileUploadModal from "./FileUploadModal";
+import { useFile } from "../contexts/FileContext";
 
 interface Tool {
   id: string;
@@ -16,23 +19,66 @@ const tools: Tool[] = [
   { id: "split", name: "Split PDF", icon: "✂️", bgColor: "bg-pink-100" },
   { id: "merge", name: "Merge PDF", icon: "📄", bgColor: "bg-pink-100" },
   { id: "annotate", name: "Annotate PDF", icon: "💬", bgColor: "bg-pink-100" },
-  { id: "extract", name: "Extract PDF Pages", icon: "📤", bgColor: "bg-pink-100" },
-  { id: "delete", name: "Delete PDF Pages", icon: "🗑️", bgColor: "bg-pink-100" },
+  {
+    id: "extract",
+    name: "Extract PDF Pages",
+    icon: "📤",
+    bgColor: "bg-pink-100",
+  },
+  {
+    id: "delete",
+    name: "Delete PDF Pages",
+    icon: "🗑️",
+    bgColor: "bg-pink-100",
+  },
   { id: "fill", name: "Fill Out PDF", icon: "✍️", bgColor: "bg-pink-100" },
   { id: "rotate", name: "Rotate PDF", icon: "🔄", bgColor: "bg-pink-100" },
   { id: "create", name: "Create PDF", icon: "➕", bgColor: "bg-pink-100" },
   { id: "organize", name: "Organize PDF", icon: "📋", bgColor: "bg-pink-100" },
   { id: "sign", name: "Sign PDF", icon: "✍️", bgColor: "bg-pink-100" },
-  { id: "password", name: "Password Protect PDF", icon: "🔒", bgColor: "bg-pink-100" },
+  {
+    id: "password",
+    name: "Password Protect PDF",
+    icon: "🔒",
+    bgColor: "bg-pink-100",
+  },
   { id: "ocr", name: "OCR PDF", icon: "👁️", bgColor: "bg-pink-100" },
   { id: "crop", name: "Crop PDF", icon: "✂️", bgColor: "bg-pink-100" },
 ];
 
 export default function EditSignModule() {
   const router = useRouter();
+  const { setSelectedFile } = useFile();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<string | undefined>(
+    undefined
+  );
 
   const handleToolClick = (toolId: string) => {
-    router.push(`/editor?tool=${toolId}`);
+    setSelectedTool(toolId);
+
+    switch (toolId) {
+      case "merge":
+        alert("Merge PDF - Not implemented yet");
+        break;
+      case "create":
+        alert("Create PDF - Not implemented yet");
+        break;
+      case "organize":
+        alert("Organize PDF - Not implemented yet");
+        break;
+      case "ocr":
+        alert("OCR PDF - Not implemented yet");
+        break;
+      default:
+        setIsModalOpen(true);
+        break;
+    }
+  };
+
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+    router.push(`/editor?tool=${selectedTool}`);
   };
 
   return (
@@ -62,6 +108,13 @@ export default function EditSignModule() {
           ))}
         </div>
       </div>
+
+      <FileUploadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onFileSelect={handleFileSelect}
+      />
     </div>
   );
 }
+
