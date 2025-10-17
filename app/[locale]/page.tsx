@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import Header from "../components/Header";
+import { Link } from "../../lib/navigation";
+import Header from "../../components/Header";
 
 export default function Home() {
   const modules = [

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "../lib/navigation";
 import ReactMarkdown from "react-markdown";
 import Header from "./Header";
 import { useFile } from "../contexts/FileContext";
