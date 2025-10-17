@@ -3,13 +3,14 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Header from "./Header";
+import { useFile } from "../contexts/FileContext";
 
 export default function SummarizerModule() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { selectedFile, setSelectedFile } = useFile();
 
   const validateAndSetFile = (file: File) => {
     // Validate file type
@@ -76,7 +77,7 @@ export default function SummarizerModule() {
       return;
     }
 
-    // Store file in localStorage or context for the editor page
+    // File is already stored in context, navigate to editor
     router.push("/summarizer/editor");
   };
 
