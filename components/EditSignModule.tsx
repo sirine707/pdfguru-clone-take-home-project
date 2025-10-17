@@ -78,7 +78,7 @@ export default function EditSignModule() {
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
-    router.push(`/editor?tool=${selectedTool}`);
+    router.push(`/edit-sign/editor?tool=${selectedTool}`);
   };
 
   return (

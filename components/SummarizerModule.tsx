@@ -1,8 +1,85 @@
 "use client";
 
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Header from "./Header";
 
 export default function SummarizerModule() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  const validateAndSetFile = (file: File) => {
+    // Validate file type
+    if (file.type !== "application/pdf") {
+      setError("Please select a valid PDF file");
+      setSelectedFile(null);
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if (file.size > maxSize) {
+      setError("File size must be less than 10MB");
+      setSelectedFile(null);
+      return;
+    }
+
+    setError(null);
+    setSelectedFile(file);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      validateAndSetFile(file);
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      validateAndSetFile(files[0]);
+    }
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleContinue = () => {
+    if (!selectedFile) {
+      setError("Please select a PDF file");
+      return;
+    }
+
+    // Store file in localStorage or context for the editor page
+    router.push("/summarizer/editor");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header activePage="summarizer" />
@@ -17,22 +94,70 @@ export default function SummarizerModule() {
           </p>
         </div>
 
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
         {/* Main Upload Area */}
-        <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-12 text-center mb-8">
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept=".pdf,application/pdf"
+          className="hidden"
+        />
+
+        <div
+          onClick={handleBrowseClick}
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={`bg-gray-50 rounded-lg border-2 border-dashed p-12 text-center mb-8 cursor-pointer transition-colors ${
+            isDragging
+              ? "border-red-500 bg-red-50"
+              : "border-gray-300 hover:border-red-400"
+          }`}
+        >
           <div className="mb-6">
             <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
           </div>
           <div className="mb-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Upload your PDF document</h3>
-            <p className="text-gray-600">Drag and drop your PDF here, or click to browse</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {selectedFile ? selectedFile.name : isDragging ? "Drop file here" : "Upload your PDF document"}
+            </h3>
+            <p className="text-gray-600">
+              {selectedFile ? "File selected! Click continue below to proceed." : "Drag and drop your PDF here, or click to browse"}
+            </p>
           </div>
-          <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-md font-medium transition-colors">
-            Choose File
-          </button>
+          {!selectedFile && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBrowseClick();
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-md font-medium transition-colors"
+            >
+              Choose File
+            </button>
+          )}
           <p className="text-sm text-gray-500 mt-4">Maximum file size: 10MB</p>
         </div>
+
+        {selectedFile && (
+          <div className="mb-8 text-center">
+            <button
+              onClick={handleContinue}
+              className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-md font-medium transition-colors"
+            >
+              Continue to Summarizer
+            </button>
+          </div>
+        )}
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
