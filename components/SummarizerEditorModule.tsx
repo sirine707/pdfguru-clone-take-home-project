@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "../lib/navigation";
 import ReactMarkdown from "react-markdown";
 import Header from "./Header";
@@ -9,6 +9,7 @@ import { useFile } from "../contexts/FileContext";
 
 export default function SummarizerEditorModule() {
   const t = useTranslations("SummarizerEditorModule");
+  const locale = useLocale();
   const [isLoading, setIsLoading] = useState(true);
   const [threadId, setThreadId] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState<
@@ -53,6 +54,7 @@ export default function SummarizerEditorModule() {
     try {
       const formData = new FormData();
       formData.append("pdf", selectedFile);
+      formData.append("locale", locale);
 
       const response = await fetch(
         "http://localhost:4000/summarizer/initialize",
@@ -111,6 +113,7 @@ export default function SummarizerEditorModule() {
         body: JSON.stringify({
           threadId,
           question: userQuestion,
+          locale,
         }),
       });
 
