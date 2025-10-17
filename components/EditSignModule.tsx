@@ -257,7 +257,7 @@ export default function EditSignModule() {
               className={`${tool.bgColor} rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow cursor-pointer`}
             >
               <div className="flex items-center space-x-4">
-                <div className="text-2xl">{tool.icon}</div>
+                {/* <div className="text-2xl">{tool.icon}</div> */}
                 <div className="text-black font-medium">{tool.name}</div>
               </div>
             </div>

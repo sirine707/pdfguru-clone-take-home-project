@@ -47,8 +47,8 @@ const formatOptions: FormatOption[] = [
     color: "bg-green-100 border-green-200 text-green-800"
   },
   {
-    id: "ppt",
-    name: "PPT",
+    id: "pptx",
+    name: "PPTX",
     icon: "📽️",
     color: "bg-orange-100 border-orange-200 text-orange-800"
   }
@@ -126,7 +126,7 @@ export default function FormatSelectionModal({
                   )}
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-lg">{format.icon}</span>
+                  {/* <span className="text-lg">{format.icon}</span> */}
                   <span className="font-medium text-gray-900">{format.name}</span>
                 </div>
               </div>

@@ -190,7 +190,7 @@ export default function SummarizerModule() {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
-            <div className="text-3xl mb-4">🤖</div>
+            <div className="text-3xl mb-4">💡</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               AI-Powered Analysis
             </h3>

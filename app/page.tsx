@@ -115,22 +115,22 @@ export default function Home() {
             <p className="text-gray-600 mb-6">
               Choose any of our tools above to get started with your PDF tasks.
             </p>
-            <div className="flex justify-center space-x-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
               <Link
                 href="/edit-sign"
-                className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-md font-medium transition-colors"
+                className="bg-red-500 hover:bg-red-600 text-white px-6 sm:px-8 py-3 rounded-md font-medium transition-colors text-center"
               >
                 Start Editing
               </Link>
               <Link
                 href="/converter"
-                className="border border-red-500 text-red-500 hover:bg-red-50 px-8 py-3 rounded-md font-medium transition-colors"
+                className="border border-red-500 text-red-500 hover:bg-red-50 px-6 sm:px-8 py-3 rounded-md font-medium transition-colors text-center"
               >
                 Convert Files
               </Link>
               <Link
                 href="/summarizer"
-                className="border border-red-500 text-red-500 hover:bg-red-50 px-8 py-3 rounded-md font-medium transition-colors"
+                className="border border-red-500 text-red-500 hover:bg-red-50 px-6 sm:px-8 py-3 rounded-md font-medium transition-colors text-center"
               >
                 AI Summarize
               </Link>
