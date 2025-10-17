@@ -116,3 +116,16 @@ Open [http://localhost:4000](http://localhost:4000) to view the backend app.
 
 [Watch Demo Video](https://youtu.be/E8hh81jDVac)
 
+## Follow-Up Work
+
+- I didn't clone the app UIs and usage flows in a pixel-perfect way, but I can do so if required. I just wanted to demonstrate the challenging parts, which I believe are what matter most in this assessment.
+
+- I could have created a separate bridge page for each tool under `/edit-sign` and `/converter` so that SEO could index them individually with their respective metadata, but I chose to keep it simple.
+
+- Using the `tool` query parameter in `/edit-sign/editor`, I wanted to display a usage tip of PSPDFKit that depends on the selected tool.
+
+- For analytics, I planned to integrate GA4 in a simple way, by creating a project on GCP and adding their script.
+
+- I skipped the payment part as requested.
+
+- Login authentication with JWT was properly implemented, including session persistence and retrieval on refresh. However, I didn't go beyond that, as the requirements only specified a basic authentication flow.
