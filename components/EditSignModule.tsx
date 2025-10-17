@@ -51,6 +51,8 @@ export default function EditSignModule() {
   const [conversionError, setConversionError] = useState<string | null>(null);
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
   const handleToolClick = (toolId: string) => {
     setSelectedTool(toolId);
 
@@ -140,7 +142,7 @@ export default function EditSignModule() {
       formData.append("file", file);
 
       const response = await fetch(
-        `http://localhost:4000/converter/convert/${toolId}`,
+        `${API_BASE_URL}/converter/convert/${toolId}`,
         {
           method: "POST",
           body: formData,
@@ -199,7 +201,7 @@ export default function EditSignModule() {
       });
 
       const response = await fetch(
-        `http://localhost:4000/converter/convert/merge`,
+        `${API_BASE_URL}/converter/convert/merge`,
         {
           method: "POST",
           body: formData,
@@ -299,4 +301,3 @@ export default function EditSignModule() {
     </div>
   );
 }
-

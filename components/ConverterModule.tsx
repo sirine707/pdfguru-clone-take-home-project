@@ -121,6 +121,8 @@ export default function ConverterModule() {
   const [isFormatModalOpen, setIsFormatModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
   const getCurrentTools = () => {
     switch (activeTab) {
       case "from":
@@ -177,7 +179,7 @@ export default function ConverterModule() {
       formData.append("file", file);
 
       const response = await fetch(
-        `http://localhost:4000/converter/convert/${toolId}`,
+        `${API_BASE_URL}/converter/convert/${toolId}`,
         {
           method: "POST",
           body: formData,
@@ -236,7 +238,7 @@ export default function ConverterModule() {
       formData.append("file", selectedFile);
 
       const response = await fetch(
-        `http://localhost:4000/converter/convert/pdf-to-${format}`,
+        `${API_BASE_URL}/converter/convert/pdf-to-${format}`,
         {
           method: "POST",
           body: formData,
@@ -377,4 +379,3 @@ export default function ConverterModule() {
     </div>
   );
 }
-

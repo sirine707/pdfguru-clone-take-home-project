@@ -25,6 +25,8 @@ export default function SummarizerEditorModule() {
     return selectedFile ? URL.createObjectURL(selectedFile) : null;
   }, [selectedFile]);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
   useEffect(() => {
     if (selectedFile && !hasInitialized.current) {
       hasInitialized.current = true;
@@ -57,7 +59,7 @@ export default function SummarizerEditorModule() {
       formData.append("locale", locale);
 
       const response = await fetch(
-        "http://localhost:4000/summarizer/initialize",
+        `${API_BASE_URL}/summarizer/initialize`,
         {
           method: "POST",
           body: formData,
@@ -105,7 +107,7 @@ export default function SummarizerEditorModule() {
     ]);
 
     try {
-      const response = await fetch("http://localhost:4000/summarizer/ask", {
+      const response = await fetch(`${API_BASE_URL}/summarizer/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -339,4 +341,3 @@ export default function SummarizerEditorModule() {
     </div>
   );
 }
-
