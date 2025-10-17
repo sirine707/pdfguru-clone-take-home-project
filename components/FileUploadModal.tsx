@@ -6,12 +6,16 @@ interface FileUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onFileSelect: (file: File) => void;
+  allowedFileTypes?: string[];
+  submitButtonText?: string;
 }
 
 export default function FileUploadModal({
   isOpen,
   onClose,
   onFileSelect,
+  allowedFileTypes = ["application/pdf"],
+  submitButtonText = "Continue to Editor",
 }: FileUploadModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,8 +24,10 @@ export default function FileUploadModal({
 
   const validateAndSetFile = (file: File) => {
     // Validate file type
-    if (file.type !== "application/pdf") {
-      setError("Please select a valid PDF file");
+    if (!allowedFileTypes.includes(file.type)) {
+      setError(
+        `Please select a valid file type (${allowedFileTypes.join(", ")})`
+      );
       setSelectedFile(null);
       return;
     }
@@ -77,7 +83,7 @@ export default function FileUploadModal({
     e.preventDefault();
 
     if (!selectedFile) {
-      setError("Please select a PDF file");
+      setError("Please select a file");
       return;
     }
 
@@ -104,7 +110,7 @@ export default function FileUploadModal({
     <div className="fixed inset-0 bg-[#000000aa] bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Select PDF File</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Select File</h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600"
@@ -134,14 +140,14 @@ export default function FileUploadModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Choose a PDF file from your computer
+              Choose a file from your computer
             </label>
 
             <input
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              accept=".pdf,application/pdf"
+              accept={allowedFileTypes.join(",")}
               className="hidden"
             />
 
@@ -178,9 +184,12 @@ export default function FileUploadModal({
                     ? "Drop file here"
                     : "Click to browse or drag & drop"}
                 </p>
-                 <p className="text-gray-400 text-sm mt-1">
-                   PDF files only (Max 10MB)
-                 </p>
+                <p className="text-gray-400 text-sm mt-1">Max 10MB</p>
+                {allowedFileTypes && allowedFileTypes.length > 0 && (
+                  <p className="text-gray-400 text-xs mt-1">
+                    Allowed types: {allowedFileTypes.join(", ")}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -190,7 +199,7 @@ export default function FileUploadModal({
             disabled={!selectedFile}
             className="w-full bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-md font-medium transition-colors"
           >
-            Continue to Editor
+            {submitButtonText}
           </button>
         </form>
       </div>
