@@ -55,7 +55,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the frontend app.
 
 **Backend:**
 
-Check [this repo](https://github.com/sirine-jnayeh/pdfguru-clone-take-home-project-express) for the backend's code.
+Check [this repo](https://github.com/sirine707/pdfguru-clone-take-home-project-express) for the backend's code.
 
 ```bash
 yarn # Install dependencies
