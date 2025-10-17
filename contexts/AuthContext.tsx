@@ -145,13 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: email,
       };
       setUser(userData);
-      
-      // Note: The signup endpoint doesn't return a token, so user needs to sign in after
-      // If your backend changes to return a token on signup, add:
-      // if (data.token) {
-      //   localStorage.setItem("authToken", data.token);
-      // }
-    } catch (err) {
+          } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Network error. Please try again.";
       setError(errorMessage);
       throw err;

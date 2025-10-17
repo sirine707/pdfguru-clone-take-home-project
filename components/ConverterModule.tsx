@@ -509,13 +509,10 @@ export default function ConverterModule() {
   };
 
   const handleToolClick = (tool: ConversionTool) => {
-    // Open modal if tool has allowedFileTypes defined
-    // if (tool.allowedFileTypes && tool.allowedFileTypes.length > 0) {
     setSelectedTool(tool);
     setIsModalOpen(true);
     setConversionResult(null);
     setConversionError(null);
-    // }
   };
 
   const handleFileSelect = async (file: File) => {
