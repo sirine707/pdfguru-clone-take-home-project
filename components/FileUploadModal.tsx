@@ -8,38 +8,74 @@ interface FileUploadModalProps {
   onFileSelect: (file: File) => void;
 }
 
-export default function FileUploadModal({ isOpen, onClose, onFileSelect }: FileUploadModalProps) {
+export default function FileUploadModal({
+  isOpen,
+  onClose,
+  onFileSelect,
+}: FileUploadModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const validateAndSetFile = (file: File) => {
+    // Validate file type
+    if (file.type !== "application/pdf") {
+      setError("Please select a valid PDF file");
+      setSelectedFile(null);
+      return;
+    }
+
+    // Validate file size (e.g., max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if (file.size > maxSize) {
+      setError("File size must be less than 10MB");
+      setSelectedFile(null);
+      return;
+    }
+
+    setError(null);
+    setSelectedFile(file);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    
     if (file) {
-      // Validate file type
-      if (file.type !== "application/pdf") {
-        setError("Please select a valid PDF file");
-        setSelectedFile(null);
-        return;
-      }
-      
-      // Validate file size (e.g., max 50MB)
-      const maxSize = 50 * 1024 * 1024; // 50MB in bytes
-      if (file.size > maxSize) {
-        setError("File size must be less than 50MB");
-        setSelectedFile(null);
-        return;
-      }
-      
-      setError(null);
-      setSelectedFile(file);
+      validateAndSetFile(file);
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      validateAndSetFile(files[0]);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedFile) {
       setError("Please select a PDF file");
       return;
@@ -68,15 +104,23 @@ export default function FileUploadModal({ isOpen, onClose, onFileSelect }: FileU
     <div className="fixed inset-0 bg-[#000000aa] bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Select PDF File
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900">Select PDF File</h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -92,7 +136,7 @@ export default function FileUploadModal({ isOpen, onClose, onFileSelect }: FileU
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Choose a PDF file from your computer
             </label>
-            
+
             <input
               type="file"
               ref={fileInputRef}
@@ -100,21 +144,43 @@ export default function FileUploadModal({ isOpen, onClose, onFileSelect }: FileU
               accept=".pdf,application/pdf"
               className="hidden"
             />
-            
+
             <div
               onClick={handleBrowseClick}
-              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-red-400 transition-colors"
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                isDragging
+                  ? "border-red-500 bg-red-50"
+                  : "border-gray-300 hover:border-red-400"
+              }`}
             >
               <div className="flex flex-col items-center">
-                <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                <svg
+                  className="w-12 h-12 text-gray-400 mb-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
                 </svg>
                 <p className="text-gray-600 font-medium">
-                  {selectedFile ? selectedFile.name : "Click to browse"}
+                  {selectedFile
+                    ? selectedFile.name
+                    : isDragging
+                    ? "Drop file here"
+                    : "Click to browse or drag & drop"}
                 </p>
-                <p className="text-gray-400 text-sm mt-1">
-                  PDF files only (Max 50MB)
-                </p>
+                 <p className="text-gray-400 text-sm mt-1">
+                   PDF files only (Max 10MB)
+                 </p>
               </div>
             </div>
           </div>
