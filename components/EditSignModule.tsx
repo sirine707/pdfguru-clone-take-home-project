@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Header from "./Header";
 
 interface Tool {
@@ -28,6 +29,12 @@ const tools: Tool[] = [
 ];
 
 export default function EditSignModule() {
+  const router = useRouter();
+
+  const handleToolClick = (toolId: string) => {
+    router.push(`/editor?tool=${toolId}`);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header activePage="edit-sign" />
@@ -44,6 +51,7 @@ export default function EditSignModule() {
           {tools.map((tool) => (
             <div
               key={tool.id}
+              onClick={() => handleToolClick(tool.id)}
               className={`${tool.bgColor} rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow cursor-pointer`}
             >
               <div className="flex items-center space-x-4">
