@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "../lib/navigation";
 import ReactMarkdown from "react-markdown";
 import Header from "./Header";
 import { useFile } from "../contexts/FileContext";
 
 export default function SummarizerEditorModule() {
+  const t = useTranslations("SummarizerEditorModule");
   const [isLoading, setIsLoading] = useState(true);
   const [threadId, setThreadId] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState<
@@ -79,8 +81,7 @@ export default function SummarizerEditorModule() {
       setChatHistory([
         {
           type: "assistant",
-          content:
-            "Sorry, there was an error processing your PDF. Please try again.",
+          content: t("errors.processingPdf"),
         },
       ]);
     } finally {
@@ -130,8 +131,7 @@ export default function SummarizerEditorModule() {
         ...prev,
         {
           type: "assistant",
-          content:
-            "Sorry, there was an error processing your question. Please try again.",
+          content: t("errors.processingQuestion"),
         },
       ]);
     } finally {
@@ -160,16 +160,16 @@ export default function SummarizerEditorModule() {
               />
             </svg>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              No File Selected
+              {t("noFile.title")}
             </h2>
             <p className="text-gray-600 mb-6">
-              Please select a PDF file to edit
+              {t("noFile.message")}
             </p>
             <button
               onClick={() => router.push("/summarizer")}
               className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-md font-medium transition-colors"
             >
-              Go Back to Select File
+              {t("noFile.button")}
             </button>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function SummarizerEditorModule() {
             <div className="flex items-center justify-center h-96">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-500 mx-auto mb-4"></div>
-                <p className="text-gray-600 text-lg">Processing your PDF...</p>
+                <p className="text-gray-600 text-lg">{t("loading")}</p>
               </div>
             </div>
           ) : (
@@ -190,7 +190,7 @@ export default function SummarizerEditorModule() {
                 {/* Header */}
                 <div className="p-4 border-b border-gray-200">
                   <h2 className="text-lg font-bold text-gray-900">
-                    Document Preview
+                    {t("documentPreview")}
                   </h2>
                 </div>
 
@@ -218,9 +218,9 @@ export default function SummarizerEditorModule() {
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
-                        <p className="text-lg font-medium">No PDF Selected</p>
+                        <p className="text-lg font-medium">{t("noPdfSelected.title")}</p>
                         <p className="text-sm mt-2 text-gray-400">
-                          Please upload a PDF file to view it here
+                          {t("noPdfSelected.message")}
                         </p>
                       </div>
                     </div>
@@ -234,7 +234,7 @@ export default function SummarizerEditorModule() {
                 <div className="p-4 border-b border-gray-200">
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-gray-900">
-                      AI Summary
+                      {t("aiSummary")}
                     </h2>
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export default function SummarizerEditorModule() {
                   {chatHistory.length === 0 ? (
                     <div className="text-center text-gray-500 py-8">
                       <p className="text-sm">
-                        Start a conversation about your PDF
+                        {t("startConversation")}
                       </p>
                     </div>
                   ) : (
@@ -283,7 +283,7 @@ export default function SummarizerEditorModule() {
                             <div className="flex items-center space-x-2">
                               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
                               <span className="text-sm text-gray-600">
-                                Thinking...
+                                {t("thinking")}
                               </span>
                             </div>
                           </div>
@@ -298,7 +298,7 @@ export default function SummarizerEditorModule() {
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
-                      placeholder="Write your message here"
+                      placeholder={t("messagePlaceholder")}
                       value={userMessage}
                       onChange={(e) => setUserMessage(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}

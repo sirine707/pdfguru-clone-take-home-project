@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface FileWithPreview {
   file: File;
@@ -19,6 +20,7 @@ export default function MergeModal({
   onClose,
   onMerge,
 }: MergeModalProps) {
+  const t = useTranslations("MergeModal");
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -54,7 +56,7 @@ export default function MergeModal({
 
     if (availableSlots <= 0) {
       setMessage(
-        "Maximum of 15 files allowed. Please remove some files before adding more."
+        t("errors.maxFiles")
       );
       setTimeout(() => setMessage(null), 5000);
       return;
@@ -65,7 +67,7 @@ export default function MergeModal({
 
     if (filesToAdd.length < pdfFiles.length) {
       setMessage(
-        `Only ${filesToAdd.length} file(s) added. Maximum of 15 files allowed.`
+        `${filesToAdd.length} ${t("errors.maxFilesPartial")}`
       );
       setTimeout(() => setMessage(null), 5000);
     } else {
@@ -160,7 +162,7 @@ export default function MergeModal({
       <div className="bg-white rounded-lg p-8 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Merge PDF Files</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t("title")}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -184,11 +186,11 @@ export default function MergeModal({
         {/* Instructions */}
         <div className="text-center mb-6">
           <p className="text-gray-600">
-            You can upload up to 15 files, each file size up to 10 MB.
+            {t("instructions")}
           </p>
           {selectedFiles.length > 0 && (
             <p className="text-sm text-gray-500 mt-2">
-              Number of selected files: {selectedFiles.length}
+              {t("selectedFiles")}: {selectedFiles.length}
             </p>
           )}
         </div>
@@ -220,10 +222,10 @@ export default function MergeModal({
                 </svg>
               </div>
               <p className="text-gray-500 text-lg font-medium">
-                Add files to merge
+                {t("addFiles")}
               </p>
               <p className="text-gray-400 text-sm mt-2">
-                Select PDF files to combine into one document
+                {t("selectFiles")}
               </p>
             </div>
           ) : (
@@ -276,7 +278,7 @@ export default function MergeModal({
                           d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                         />
                       </svg>
-                      <p className="text-xs text-gray-500">PDF Document</p>
+                      <p className="text-xs text-gray-500">{t("pdfDocument")}</p>
                     </div>
                   </div>
 
@@ -333,14 +335,14 @@ export default function MergeModal({
               disabled={selectedFiles.length >= 15}
               className="bg-black hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md font-medium transition-colors"
             >
-              + Add Files {selectedFiles.length >= 15 && "(Max reached)"}
+              {t("addButton")} {selectedFiles.length >= 15 && t("maxReached")}
             </button>
             <button
               onClick={handleMerge}
-              disabled={selectedFiles.length === 0}
+              disabled={selectedFiles.length < 2}
               className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md font-medium transition-colors"
             >
-              Merge selected files
+              {t("mergeButton")}
             </button>
           </div>
         </div>

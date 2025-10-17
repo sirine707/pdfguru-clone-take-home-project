@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "../lib/navigation";
 import Header from "./Header";
 import FileUploadModal from "./FileUploadModal";
@@ -12,45 +13,30 @@ import { useFile } from "../contexts/FileContext";
 
 interface Tool {
   id: string;
-  name: string;
   icon: string;
   bgColor: string;
 }
 
-const tools: Tool[] = [
-  { id: "edit", name: "Edit PDF", icon: "✏️", bgColor: "bg-pink-100" },
-  { id: "compress", name: "Compress PDF", icon: "📦", bgColor: "bg-pink-100" },
-  { id: "split", name: "Split PDF", icon: "✂️", bgColor: "bg-pink-100" },
-  { id: "merge", name: "Merge PDF", icon: "📄", bgColor: "bg-pink-100" },
-  { id: "annotate", name: "Annotate PDF", icon: "💬", bgColor: "bg-pink-100" },
-  {
-    id: "extract",
-    name: "Extract PDF Pages",
-    icon: "📤",
-    bgColor: "bg-pink-100",
-  },
-  {
-    id: "delete",
-    name: "Delete PDF Pages",
-    icon: "🗑️",
-    bgColor: "bg-pink-100",
-  },
-  { id: "fill", name: "Fill Out PDF", icon: "✍️", bgColor: "bg-pink-100" },
-  { id: "rotate", name: "Rotate PDF", icon: "🔄", bgColor: "bg-pink-100" },
-  { id: "create", name: "Create PDF", icon: "➕", bgColor: "bg-pink-100" },
-  { id: "organize", name: "Organize PDF", icon: "📋", bgColor: "bg-pink-100" },
-  { id: "sign", name: "Sign PDF", icon: "✍️", bgColor: "bg-pink-100" },
-  {
-    id: "password",
-    name: "Password Protect PDF",
-    icon: "🔒",
-    bgColor: "bg-pink-100",
-  },
-  { id: "ocr", name: "OCR PDF", icon: "👁️", bgColor: "bg-pink-100" },
-  { id: "crop", name: "Crop PDF", icon: "✂️", bgColor: "bg-pink-100" },
+const toolsConfig: Tool[] = [
+  { id: "edit", icon: "✏️", bgColor: "bg-blue-100" },
+  { id: "compress", icon: "📦", bgColor: "bg-green-100" },
+  { id: "split", icon: "✂️", bgColor: "bg-yellow-100" },
+  { id: "merge", icon: "📄", bgColor: "bg-purple-100" },
+  { id: "annotate", icon: "💬", bgColor: "bg-red-100" },
+  { id: "extract", icon: "📤", bgColor: "bg-indigo-100" },
+  { id: "delete", icon: "🗑️", bgColor: "bg-orange-100" },
+  { id: "fill", icon: "✍️", bgColor: "bg-teal-100" },
+  { id: "rotate", icon: "🔄", bgColor: "bg-cyan-100" },
+  { id: "create", icon: "➕", bgColor: "bg-emerald-100" },
+  { id: "organize", icon: "📋", bgColor: "bg-lime-100" },
+  { id: "sign", icon: "✍️", bgColor: "bg-sky-100" },
+  { id: "password", icon: "🔒", bgColor: "bg-violet-100" },
+  { id: "ocr", icon: "👁️", bgColor: "bg-fuchsia-100" },
+  { id: "crop", icon: "✂️", bgColor: "bg-rose-100" },
 ];
 
 export default function EditSignModule() {
+  const t = useTranslations("EditSignModule");
   const router = useRouter();
   const { setSelectedFile } = useFile();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -245,12 +231,12 @@ export default function EditSignModule() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Title */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-black">Edit & Sign PDF</h1>
+          <h1 className="text-4xl font-bold text-black">{t("title")}</h1>
         </div>
 
         {/* Tools Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {tools.map((tool) => (
+          {toolsConfig.map((tool) => (
             <div
               key={tool.id}
               onClick={() => handleToolClick(tool.id)}
@@ -258,7 +244,7 @@ export default function EditSignModule() {
             >
               <div className="flex items-center space-x-4">
                 {/* <div className="text-2xl">{tool.icon}</div> */}
-                <div className="text-black font-medium">{tool.name}</div>
+                <div className="text-black font-medium">{t(`tools.${tool.id}`)}</div>
               </div>
             </div>
           ))}
@@ -276,10 +262,10 @@ export default function EditSignModule() {
         }
         submitButtonText={
           selectedTool === "compress"
-            ? "Compress"
+            ? t("buttons.compress")
             : selectedTool === "ocr"
-            ? "OCR"
-            : "Upload"
+            ? t("buttons.ocr")
+            : t("buttons.upload")
         }
       />
 

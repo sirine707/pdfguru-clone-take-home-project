@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "../lib/navigation";
 import Header from "./Header";
 import { useFile } from "../contexts/FileContext";
 
 export default function EditorModule() {
+  const t = useTranslations("EditorModule");
   const containerRef = useRef(null);
   const { selectedFile } = useFile();
   const router = useRouter();
@@ -50,16 +52,16 @@ export default function EditorModule() {
               />
             </svg>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              No File Selected
+              {t("noFile.title")}
             </h2>
             <p className="text-gray-600 mb-6">
-              Please select a PDF file to edit
+              {t("noFile.message")}
             </p>
             <button
               onClick={() => router.push("/edit-sign")}
               className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-md font-medium transition-colors"
             >
-              Go Back to Select File
+              {t("noFile.button")}
             </button>
           </div>
         </div>

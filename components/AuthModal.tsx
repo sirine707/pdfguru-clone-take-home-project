@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "../contexts/AuthContext";
 
 interface AuthModalProps {
@@ -19,6 +20,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   
   const { signIn, signUp, isLoading, error, clearError } = useAuth();
+  const t = useTranslations("AuthModal");
 
   // Clear error when modal closes
   useEffect(() => {
@@ -32,23 +34,23 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const newErrors: Record<string, string> = {};
 
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = t("validation.emailRequired");
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = t("validation.emailInvalid");
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = t("validation.passwordRequired");
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+      newErrors.password = t("validation.passwordMinLength");
     }
 
     if (isSignUp) {
       if (!formData.firstName) {
-        newErrors.firstName = "First name is required";
+        newErrors.firstName = t("validation.firstNameRequired");
       }
       if (!formData.lastName) {
-        newErrors.lastName = "Last name is required";
+        newErrors.lastName = t("validation.lastNameRequired");
       }
     }
 
@@ -108,7 +110,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            {isSignUp ? "Sign Up" : "Sign In"}
+            {isSignUp ? t("signUp") : t("signIn")}
           </h2>
           <button
             onClick={onClose}
@@ -131,7 +133,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <>
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name
+                  {t("firstName")}
                 </label>
                 <input
                   type="text"
@@ -142,7 +144,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
                     validationErrors.firstName ? "border-red-500" : "border-gray-300"
                   }`}
-                  placeholder="Enter your first name"
+                  placeholder={t("firstNamePlaceholder")}
                 />
                 {validationErrors.firstName && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.firstName}</p>
@@ -151,7 +153,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
               <div>
                 <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name
+                  {t("lastName")}
                 </label>
                 <input
                   type="text"
@@ -162,7 +164,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
                     validationErrors.lastName ? "border-red-500" : "border-gray-300"
                   }`}
-                  placeholder="Enter your last name"
+                  placeholder={t("lastNamePlaceholder")}
                 />
                 {validationErrors.lastName && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.lastName}</p>
@@ -173,7 +175,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+              {t("email")}
             </label>
             <input
               type="email"
@@ -184,7 +186,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
                 validationErrors.email ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="Enter your email"
+              placeholder={t("emailPlaceholder")}
             />
             {validationErrors.email && (
               <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
@@ -193,7 +195,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+              {t("password")}
             </label>
             <input
               type="password"
@@ -204,7 +206,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 ${
                 validationErrors.password ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="Enter your password"
+              placeholder={t("passwordPlaceholder")}
             />
             {validationErrors.password && (
               <p className="text-red-500 text-sm mt-1">{validationErrors.password}</p>
@@ -216,18 +218,19 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             disabled={isLoading}
             className="w-full bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-md font-medium transition-colors"
           >
-            {isLoading ? "Loading..." : (isSignUp ? "Sign Up" : "Sign In")}
+            {isLoading ? t("loading") : (isSignUp ? t("signUp") : t("signIn"))}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600">
-            {isSignUp ? "Already have an account?" : "Don't have an account?"}
+            {isSignUp ? t("alreadyHaveAccount") : t("dontHaveAccount")}
+            {" "}
             <button
               onClick={switchMode}
-              className="ml-1 text-red-500 hover:text-red-600 font-medium"
+              className="text-red-500 hover:text-red-600 font-medium"
             >
-              {isSignUp ? "Sign In" : "Sign Up"}
+              {isSignUp ? t("signIn") : t("signUp")}
             </button>
           </p>
         </div>

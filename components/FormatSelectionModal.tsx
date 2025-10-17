@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface FormatOption {
   id: string;
-  name: string;
   icon: string;
   color: string;
 }
@@ -18,37 +18,31 @@ interface FormatSelectionModalProps {
 const formatOptions: FormatOption[] = [
   {
     id: "word",
-    name: "Word",
     icon: "📄",
     color: "bg-blue-100 border-blue-200 text-blue-800"
   },
   {
     id: "jpg",
-    name: "JPG",
     icon: "🖼️",
     color: "bg-pink-100 border-pink-200 text-pink-800"
   },
   {
     id: "excel",
-    name: "Excel",
     icon: "📊",
     color: "bg-green-100 border-green-200 text-green-800"
   },
   {
     id: "png",
-    name: "PNG",
     icon: "🖼️",
     color: "bg-orange-100 border-orange-200 text-orange-800"
   },
   {
     id: "epub",
-    name: "EPUB",
     icon: "📖",
     color: "bg-green-100 border-green-200 text-green-800"
   },
   {
     id: "pptx",
-    name: "PPTX",
     icon: "📽️",
     color: "bg-orange-100 border-orange-200 text-orange-800"
   }
@@ -59,6 +53,7 @@ export default function FormatSelectionModal({
   onClose,
   onFormatSelect
 }: FormatSelectionModalProps) {
+  const t = useTranslations("FormatSelectionModal");
   const [selectedFormat, setSelectedFormat] = useState<string>("word");
 
   if (!isOpen) return null;
@@ -77,7 +72,7 @@ export default function FormatSelectionModal({
       <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Great Job!</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t("title")}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -100,7 +95,7 @@ export default function FormatSelectionModal({
 
         {/* Prompt */}
         <p className="text-gray-700 mb-6 text-center">
-          Which format do you want to download?
+          {t("prompt")}
         </p>
 
         {/* Format Options Grid */}
@@ -127,7 +122,7 @@ export default function FormatSelectionModal({
                 </div>
                 <div className="flex items-center space-x-2">
                   {/* <span className="text-lg">{format.icon}</span> */}
-                  <span className="font-medium text-gray-900">{format.name}</span>
+                  <span className="font-medium text-gray-900">{t(`formats.${format.id}`)}</span>
                 </div>
               </div>
             </button>
@@ -140,13 +135,13 @@ export default function FormatSelectionModal({
             onClick={onClose}
             className="flex-1 bg-white border border-gray-300 text-gray-900 py-2 px-4 rounded-md font-medium hover:bg-gray-50 transition-colors"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             onClick={handleDownload}
             className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md font-medium transition-colors"
           >
-            Download
+            {t("download")}
           </button>
         </div>
       </div>

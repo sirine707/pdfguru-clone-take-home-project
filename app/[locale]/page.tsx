@@ -1,50 +1,50 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "../../lib/navigation";
 import Header from "../../components/Header";
 
 export default function Home() {
+  const t = useTranslations("Home");
+  
   const modules = [
     {
-      title: "Edit & Sign PDF",
-      description:
-        "Edit, annotate, compress, split, merge, and sign your PDF documents with ease.",
+      title: t("modules.editSign.title"),
+      description: t("modules.editSign.description"),
       href: "/edit-sign",
       icon: "✏️",
       features: [
-        "Edit PDF",
-        "Compress PDF",
-        "Split PDF",
-        "Merge PDF",
-        "Sign PDF",
-        "Annotate PDF",
+        t("modules.editSign.features.edit"),
+        t("modules.editSign.features.compress"),
+        t("modules.editSign.features.split"),
+        t("modules.editSign.features.merge"),
+        t("modules.editSign.features.sign"),
+        t("modules.editSign.features.annotate"),
       ],
     },
     {
-      title: "PDF Converter Tool",
-      description:
-        "Convert PDFs to various formats or convert other formats to PDF.",
+      title: t("modules.converter.title"),
+      description: t("modules.converter.description"),
       href: "/converter",
       icon: "🔄",
       features: [
-        "PDF to Word",
-        "PDF to Image",
-        "Word to PDF",
-        "Image to PDF",
-        "Excel to PDF",
+        t("modules.converter.features.pdfToWord"),
+        t("modules.converter.features.pdfToImage"),
+        t("modules.converter.features.wordToPdf"),
+        t("modules.converter.features.imageToPdf"),
+        t("modules.converter.features.excelToPdf"),
       ],
     },
     {
-      title: "AI PDF Summarizer",
-      description:
-        "Extract key insights and summaries from your PDF documents using AI.",
+      title: t("modules.summarizer.title"),
+      description: t("modules.summarizer.description"),
       href: "/summarizer",
       icon: "🤖",
       features: [
-        "AI Analysis",
-        "Quick Processing",
-        "Multiple Formats",
-        "Key Insights",
+        t("modules.summarizer.features.aiAnalysis"),
+        t("modules.summarizer.features.quickProcessing"),
+        t("modules.summarizer.features.multipleFormats"),
+        t("modules.summarizer.features.keyInsights"),
       ],
     },
   ];
@@ -58,11 +58,10 @@ export default function Home() {
         {/* Hero section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-black mb-6">
-            Your Complete PDF Solution
+            {t("heroTitle")}
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Edit, convert, and summarize PDFs with our powerful suite of tools.
-            Everything you need to work with PDFs in one place.
+            {t("heroSubtitle")}
           </p>
         </div>
 
@@ -84,7 +83,7 @@ export default function Home() {
 
               <div className="space-y-2">
                 <h3 className="font-semibold text-gray-900 mb-3">
-                  Key Features:
+                  {t("keyFeatures")}
                 </h3>
                 {module.features.map((feature, featureIndex) => (
                   <div
@@ -99,7 +98,7 @@ export default function Home() {
 
               <div className="mt-6 text-center">
                 <span className="text-red-500 font-medium group-hover:text-red-600">
-                  Get Started →
+                  {t("getStarted")}
                 </span>
               </div>
             </Link>
@@ -110,29 +109,29 @@ export default function Home() {
         <div className="text-center mt-16">
           <div className="bg-gray-50 rounded-lg p-8">
             <h2 className="text-2xl font-bold text-black mb-4">
-              Ready to transform your PDF workflow?
+              {t("ctaTitle")}
             </h2>
             <p className="text-gray-600 mb-6">
-              Choose any of our tools above to get started with your PDF tasks.
+              {t("ctaSubtitle")}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
               <Link
                 href="/edit-sign"
                 className="bg-red-500 hover:bg-red-600 text-white px-6 sm:px-8 py-3 rounded-md font-medium transition-colors text-center"
               >
-                Start Editing
+                {t("startEditing")}
               </Link>
               <Link
                 href="/converter"
                 className="border border-red-500 text-red-500 hover:bg-red-50 px-6 sm:px-8 py-3 rounded-md font-medium transition-colors text-center"
               >
-                Convert Files
+                {t("convertFiles")}
               </Link>
               <Link
                 href="/summarizer"
                 className="border border-red-500 text-red-500 hover:bg-red-50 px-6 sm:px-8 py-3 rounded-md font-medium transition-colors text-center"
               >
-                AI Summarize
+                {t("aiSummarize")}
               </Link>
             </div>
           </div>

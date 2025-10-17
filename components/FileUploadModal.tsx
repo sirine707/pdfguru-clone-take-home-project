@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 interface FileUploadModalProps {
   isOpen: boolean;
@@ -15,18 +16,21 @@ export default function FileUploadModal({
   onClose,
   onFileSelect,
   allowedFileTypes = ["application/pdf"],
-  submitButtonText = "Continue to Editor",
+  submitButtonText,
 }: FileUploadModalProps) {
+  const t = useTranslations("FileUploadModal");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const buttonText = submitButtonText || t("defaultButton");
 
   const validateAndSetFile = (file: File) => {
     // Validate file type
     if (!allowedFileTypes.includes(file.type)) {
       setError(
-        `Please select a valid file type (${allowedFileTypes.join(", ")})`
+        `${t("errors.invalidType")} (${allowedFileTypes.join(", ")})`
       );
       setSelectedFile(null);
       return;
@@ -35,7 +39,7 @@ export default function FileUploadModal({
     // Validate file size (e.g., max 10MB)
     const maxSize = 10 * 1024 * 1024; // 10MB in bytes
     if (file.size > maxSize) {
-      setError("File size must be less than 10MB");
+      setError(t("errors.fileTooLarge"));
       setSelectedFile(null);
       return;
     }
@@ -83,7 +87,7 @@ export default function FileUploadModal({
     e.preventDefault();
 
     if (!selectedFile) {
-      setError("Please select a file");
+      setError(t("errors.noFile"));
       return;
     }
 
@@ -110,7 +114,7 @@ export default function FileUploadModal({
     <div className="fixed inset-0 bg-[#000000aa] bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Select File</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t("title")}</h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600"
@@ -140,7 +144,7 @@ export default function FileUploadModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Choose a file from your computer
+              {t("label")}
             </label>
 
             <input
@@ -181,13 +185,13 @@ export default function FileUploadModal({
                   {selectedFile
                     ? selectedFile.name
                     : isDragging
-                    ? "Drop file here"
-                    : "Click to browse or drag & drop"}
+                    ? t("dropHere")
+                    : t("dragDrop")}
                 </p>
-                <p className="text-gray-400 text-sm mt-1">Max 10MB</p>
+                <p className="text-gray-400 text-sm mt-1">{t("maxSize")}</p>
                 {allowedFileTypes && allowedFileTypes.length > 0 && (
                   <p className="text-gray-400 text-xs mt-1">
-                    Allowed types: {allowedFileTypes.join(", ")}
+                    {t("allowedTypes")}: {allowedFileTypes.join(", ")}
                   </p>
                 )}
               </div>
@@ -199,7 +203,7 @@ export default function FileUploadModal({
             disabled={!selectedFile}
             className="w-full bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-md font-medium transition-colors"
           >
-            {submitButtonText}
+            {buttonText}
           </button>
         </form>
       </div>

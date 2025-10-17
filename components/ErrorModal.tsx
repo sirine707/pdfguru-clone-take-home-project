@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface ErrorModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -11,6 +13,8 @@ export default function ErrorModal({
   onClose,
   error
 }: ErrorModalProps) {
+  const t = useTranslations("ErrorModal");
+  
   if (!isOpen) return null;
 
   return (
@@ -18,7 +22,7 @@ export default function ErrorModal({
       <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            Conversion Failed
+            {t("title")}
           </h2>
           <button
             onClick={onClose}
@@ -66,7 +70,7 @@ export default function ErrorModal({
           onClick={onClose}
           className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md font-medium transition-colors"
         >
-          Close
+          {t("close")}
         </button>
       </div>
     </div>

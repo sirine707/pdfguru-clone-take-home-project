@@ -6,6 +6,315 @@
     "aiSummarizer": "Résumé PDF IA",
     "signIn": "Se connecter",
     "logOut": "Se déconnecter"
+  },
+  "AuthModal": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "password": "Mot de passe",
+    "firstNamePlaceholder": "Entrez votre prénom",
+    "lastNamePlaceholder": "Entrez votre nom",
+    "emailPlaceholder": "Entrez votre email",
+    "passwordPlaceholder": "Entrez votre mot de passe",
+    "loading": "Chargement...",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "validation": {
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "L'email est invalide",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+      "firstNameRequired": "Le prénom est requis",
+      "lastNameRequired": "Le nom est requis"
+    }
+  },
+  "Home": {
+    "heroTitle": "Votre Solution PDF Complète",
+    "heroSubtitle": "Modifiez, convertissez et résumez des PDF avec notre suite d'outils puissants. Tout ce dont vous avez besoin pour travailler avec des PDF en un seul endroit.",
+    "keyFeatures": "Fonctionnalités Clés :",
+    "getStarted": "Commencer →",
+    "ctaTitle": "Prêt à transformer votre flux de travail PDF ?",
+    "ctaSubtitle": "Choisissez l'un de nos outils ci-dessus pour commencer vos tâches PDF.",
+    "startEditing": "Commencer l'Édition",
+    "convertFiles": "Convertir des Fichiers",
+    "aiSummarize": "Résumé IA",
+    "modules": {
+      "editSign": {
+        "title": "Modifier & Signer PDF",
+        "description": "Modifiez, annotez, compressez, divisez, fusionnez et signez vos documents PDF en toute simplicité.",
+        "features": {
+          "edit": "Modifier PDF",
+          "compress": "Compresser PDF",
+          "split": "Diviser PDF",
+          "merge": "Fusionner PDF",
+          "sign": "Signer PDF",
+          "annotate": "Annoter PDF"
+        }
+      },
+      "converter": {
+        "title": "Outil de Conversion PDF",
+        "description": "Convertissez des PDF vers divers formats ou convertissez d'autres formats en PDF.",
+        "features": {
+          "pdfToWord": "PDF vers Word",
+          "pdfToImage": "PDF vers Image",
+          "wordToPdf": "Word vers PDF",
+          "imageToPdf": "Image vers PDF",
+          "excelToPdf": "Excel vers PDF"
+        }
+      },
+      "summarizer": {
+        "title": "Résumé PDF par IA",
+        "description": "Extrayez des informations clés et des résumés de vos documents PDF grâce à l'IA.",
+        "features": {
+          "aiAnalysis": "Analyse IA",
+          "quickProcessing": "Traitement Rapide",
+          "multipleFormats": "Formats Multiples",
+          "keyInsights": "Informations Clés"
+        }
+      }
+    }
+  },
+  "EditSignModule": {
+    "title": "Modifier & Signer PDF",
+    "tools": {
+      "edit": "Modifier PDF",
+      "compress": "Compresser PDF",
+      "split": "Diviser PDF",
+      "merge": "Fusionner PDF",
+      "annotate": "Annoter PDF",
+      "extract": "Extraire des Pages PDF",
+      "delete": "Supprimer des Pages PDF",
+      "fill": "Remplir PDF",
+      "rotate": "Pivoter PDF",
+      "create": "Créer PDF",
+      "organize": "Organiser PDF",
+      "sign": "Signer PDF",
+      "password": "Protéger par Mot de Passe",
+      "ocr": "OCR PDF",
+      "crop": "Recadrer PDF"
+    },
+    "buttons": {
+      "compress": "Compresser",
+      "ocr": "OCR",
+      "upload": "Téléverser"
+    }
+  },
+  "SummarizerModule": {
+    "title": "Résumé PDF par IA",
+    "subtitle": "Extrayez des informations clés et des résumés de vos documents PDF grâce à une technologie d'IA avancée",
+    "errors": {
+      "invalidFile": "Veuillez sélectionner un fichier PDF valide",
+      "fileTooLarge": "La taille du fichier doit être inférieure à 10 Mo",
+      "noFile": "Veuillez sélectionner un fichier PDF"
+    },
+    "upload": {
+      "dropFile": "Déposez le fichier ici",
+      "uploadDocument": "Téléversez votre document PDF",
+      "fileSelected": "Fichier sélectionné ! Cliquez sur continuer ci-dessous pour poursuivre.",
+      "dragAndDrop": "Glissez-déposez votre PDF ici, ou cliquez pour parcourir",
+      "chooseFile": "Choisir un Fichier",
+      "maxSize": "Taille maximale du fichier : 10 Mo",
+      "continue": "Continuer vers le Résumeur"
+    },
+    "features": {
+      "aiPowered": {
+        "title": "Analyse par IA",
+        "description": "Des algorithmes d'apprentissage automatique avancés extraient des informations significatives de vos documents"
+      },
+      "quickProcessing": {
+        "title": "Traitement Rapide",
+        "description": "Obtenez des résumés complets en quelques secondes, pas des heures de lecture manuelle"
+      },
+      "multipleFormats": {
+        "title": "Formats Multiples",
+        "description": "Exportez les résumés sous forme de texte, de points clés ou de rapports structurés"
+      }
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "steps": {
+        "upload": {
+          "title": "Téléverser PDF",
+          "description": "Téléversez votre document PDF sur notre plateforme sécurisée"
+        },
+        "analyze": {
+          "title": "Analyse IA",
+          "description": "Notre IA lit et analyse le contenu"
+        },
+        "generate": {
+          "title": "Générer un Résumé",
+          "description": "Les points clés et les informations sont extraits"
+        },
+        "download": {
+          "title": "Télécharger les Résultats",
+          "description": "Obtenez votre résumé dans le format de votre choix"
+        }
+      }
+    }
+  },
+  "ConverterModule": {
+    "title": "Outil de Conversion PDF",
+    "tabs": {
+      "convertFromPdf": "Convertir depuis PDF",
+      "convertToPdf": "Convertir en PDF",
+      "otherFormats": "Autres Formats"
+    },
+    "button": "Convertir",
+    "errors": {
+      "invalidFileType": "Type de fichier invalide. Veuillez sélectionner un fichier valide.",
+      "conversionFailed": "La conversion a échoué. Veuillez réessayer.",
+      "conversionError": "Une erreur s'est produite lors de la conversion. Veuillez réessayer."
+    },
+    "tools": {
+      "pdfConverter": "Convertisseur PDF",
+      "pdfToWord": "PDF vers Word",
+      "pdfToPng": "PDF vers PNG",
+      "pdfToJpg": "PDF vers JPG",
+      "pdfToExcel": "PDF vers Excel",
+      "pdfToPptx": "PDF vers PPTX",
+      "pdfToAzw3": "PDF vers AZW3",
+      "pdfToDocx": "PDF vers DOCX",
+      "pdfToMobi": "PDF vers MOBI",
+      "pdfToText": "PDF vers Texte",
+      "pdfToTiff": "PDF vers TIFF",
+      "pdfToDxf": "PDF vers DXF",
+      "pdfToHtml": "PDF vers HTML",
+      "pdfToEps": "PDF vers EPS",
+      "pdfToWebp": "PDF vers WebP",
+      "pdfToEpub": "PDF vers EPUB",
+      "pdfToImage": "PDF vers Image",
+      "pdfToSvg": "PDF vers SVG",
+      "wordToPdf": "Word vers PDF",
+      "pngToPdf": "PNG vers PDF",
+      "jpgToPdf": "JPG vers PDF",
+      "excelToPdf": "Excel vers PDF",
+      "pptxToPdf": "PPTX vers PDF",
+      "azw3ToPdf": "AZW3 vers PDF",
+      "csvToPdf": "CSV vers PDF",
+      "djvuToPdf": "DjVu vers PDF",
+      "docxToPdf": "DOCX vers PDF",
+      "dwgToPdf": "DWG vers PDF",
+      "dxfToPdf": "DXF vers PDF",
+      "epsToPdf": "EPS vers PDF",
+      "epubToPdf": "EPUB vers PDF",
+      "imageToPdf": "Image vers PDF",
+      "htmlToPdf": "HTML vers PDF",
+      "mobiToPdf": "MOBI vers PDF",
+      "svgToPdf": "SVG vers PDF",
+      "textToPdf": "Texte vers PDF",
+      "tiffToPdf": "TIFF vers PDF",
+      "webpToPdf": "WebP vers PDF",
+      "avifToPdf": "Avif vers PDF",
+      "heicToPdf": "Heic vers PDF",
+      "cbrToPdf": "CBR vers PDF",
+      "rtfToPdf": "RTF vers PDF",
+      "xpsToPdf": "XPS vers PDF",
+      "avifToJpg": "Avif vers JPG",
+      "avifToPng": "AVIF vers PNG",
+      "webpToPng": "WEBP vers PNG",
+      "epubToMobi": "Epub vers MOBI",
+      "csvToExcel": "CSV vers Excel",
+      "dwgToDxf": "DWG vers DXF",
+      "gifToJpg": "GIF vers JPG",
+      "gifToPng": "GIF vers PNG",
+      "jpegToJpg": "JPEG vers JPG",
+      "heicToJpg": "Heic vers JPG",
+      "heicToPng": "Heic vers PNG",
+      "jpgToPng": "JPG vers PNG",
+      "pngToJpg": "PNG vers JPG",
+      "svgToJpg": "SVG vers JPG",
+      "webpToJpg": "WEBP vers JPG",
+      "wordToJpg": "Word vers JPG",
+      "pngToWebp": "PNG vers WEBP",
+      "svgToPng": "SVG vers PNG"
+    }
+  },
+  "FileUploadModal": {
+    "title": "Sélectionner un fichier",
+    "label": "Choisissez un fichier depuis votre ordinateur",
+    "dragDrop": "Cliquez pour parcourir ou glissez-déposez",
+    "dropHere": "Déposez le fichier ici",
+    "maxSize": "Max 10 Mo",
+    "allowedTypes": "Types autorisés",
+    "errors": {
+      "invalidType": "Veuillez sélectionner un type de fichier valide",
+      "fileTooLarge": "La taille du fichier doit être inférieure à 10 Mo",
+      "noFile": "Veuillez sélectionner un fichier"
+    },
+    "defaultButton": "Continuer vers l'éditeur"
+  },
+  "LoadingModal": {
+    "defaultTitle": "Conversion en cours...",
+    "defaultMessage": "Veuillez patienter pendant la conversion de votre fichier"
+  },
+  "SuccessModal": {
+    "title": "Conversion réussie !",
+    "message": "Votre fichier a été converti avec succès !",
+    "fileName": "Nom du fichier :",
+    "downloadAgain": "Télécharger à nouveau",
+    "close": "Fermer"
+  },
+  "ErrorModal": {
+    "title": "Échec de la conversion",
+    "close": "Fermer"
+  },
+  "MergeModal": {
+    "title": "Fusionner des fichiers PDF",
+    "instructions": "Vous pouvez téléverser jusqu'à 15 fichiers, chacun d'une taille maximale de 10 Mo.",
+    "selectedFiles": "Nombre de fichiers sélectionnés",
+    "addFiles": "Ajouter des fichiers à fusionner",
+    "selectFiles": "Sélectionnez des fichiers PDF à combiner en un seul document",
+    "pdfDocument": "Document PDF",
+    "addButton": "+ Ajouter des fichiers",
+    "maxReached": "(Maximum atteint)",
+    "mergeButton": "Fusionner les fichiers sélectionnés",
+    "errors": {
+      "maxFiles": "Maximum de 15 fichiers autorisés. Veuillez supprimer des fichiers avant d'en ajouter d'autres.",
+      "maxFilesPartial": "fichier(s) ajouté(s). Maximum de 15 fichiers autorisés."
+    }
+  },
+  "FormatSelectionModal": {
+    "title": "Excellent travail !",
+    "prompt": "Dans quel format souhaitez-vous télécharger ?",
+    "formats": {
+      "word": "Word",
+      "jpg": "JPG",
+      "excel": "Excel",
+      "png": "PNG",
+      "epub": "EPUB",
+      "pptx": "PPTX"
+    },
+    "cancel": "Annuler",
+    "download": "Télécharger"
+  },
+  "SummarizerEditorModule": {
+    "noFile": {
+      "title": "Aucun fichier sélectionné",
+      "message": "Veuillez sélectionner un fichier PDF à modifier",
+      "button": "Retour à la sélection de fichier"
+    },
+    "loading": "Traitement de votre PDF...",
+    "documentPreview": "Aperçu du document",
+    "noPdfSelected": {
+      "title": "Aucun PDF sélectionné",
+      "message": "Veuillez téléverser un fichier PDF pour le visualiser ici"
+    },
+    "aiSummary": "Résumé IA",
+    "startConversation": "Commencez une conversation à propos de votre PDF",
+    "thinking": "Réflexion...",
+    "messagePlaceholder": "Écrivez votre message ici",
+    "errors": {
+      "processingPdf": "Désolé, une erreur s'est produite lors du traitement de votre PDF. Veuillez réessayer.",
+      "processingQuestion": "Désolé, une erreur s'est produite lors du traitement de votre question. Veuillez réessayer."
+    }
+  },
+  "EditorModule": {
+    "noFile": {
+      "title": "Aucun fichier sélectionné",
+      "message": "Veuillez sélectionner un fichier PDF à modifier",
+      "button": "Retour à la sélection de fichier"
+    }
   }
 }
-

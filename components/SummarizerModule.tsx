@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "../lib/navigation";
 import Header from "./Header";
 import { useFile } from "../contexts/FileContext";
 
 export default function SummarizerModule() {
+  const t = useTranslations("SummarizerModule");
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -23,7 +25,7 @@ export default function SummarizerModule() {
   const validateAndSetFile = (file: File) => {
     // Validate file type
     if (file.type !== "application/pdf") {
-      setError("Please select a valid PDF file");
+      setError(t("errors.invalidFile"));
       setSelectedFile(null);
       return;
     }
@@ -31,7 +33,7 @@ export default function SummarizerModule() {
     // Validate file size (max 10MB)
     const maxSize = 10 * 1024 * 1024; // 10MB in bytes
     if (file.size > maxSize) {
-      setError("File size must be less than 10MB");
+      setError(t("errors.fileTooLarge"));
       setSelectedFile(null);
       return;
     }
@@ -81,7 +83,7 @@ export default function SummarizerModule() {
 
   const handleContinue = () => {
     if (!selectedFile) {
-      setError("Please select a PDF file");
+      setError(t("errors.noFile"));
       return;
     }
 
@@ -98,11 +100,10 @@ export default function SummarizerModule() {
         {/* Title */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-black mb-4">
-            AI PDF Summarizer
+            {t("title")}
           </h1>
           <p className="text-lg text-gray-600">
-            Extract key insights and summaries from your PDF documents using
-            advanced AI technology
+            {t("subtitle")}
           </p>
         </div>
 
@@ -153,13 +154,13 @@ export default function SummarizerModule() {
               {selectedFile
                 ? selectedFile.name
                 : isDragging
-                ? "Drop file here"
-                : "Upload your PDF document"}
+                ? t("upload.dropFile")
+                : t("upload.uploadDocument")}
             </h3>
             <p className="text-gray-600">
               {selectedFile
-                ? "File selected! Click continue below to proceed."
-                : "Drag and drop your PDF here, or click to browse"}
+                ? t("upload.fileSelected")
+                : t("upload.dragAndDrop")}
             </p>
           </div>
           {!selectedFile && (
@@ -170,10 +171,10 @@ export default function SummarizerModule() {
               }}
               className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-md font-medium transition-colors"
             >
-              Choose File
+              {t("upload.chooseFile")}
             </button>
           )}
-          <p className="text-sm text-gray-500 mt-4">Maximum file size: 10MB</p>
+          <p className="text-sm text-gray-500 mt-4">{t("upload.maxSize")}</p>
         </div>
 
         {selectedFile && (
@@ -182,7 +183,7 @@ export default function SummarizerModule() {
               onClick={handleContinue}
               className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-md font-medium transition-colors"
             >
-              Continue to Summarizer
+              {t("upload.continue")}
             </button>
           </div>
         )}
@@ -192,32 +193,30 @@ export default function SummarizerModule() {
           <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
             <div className="text-3xl mb-4">💡</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              AI-Powered Analysis
+              {t("features.aiPowered.title")}
             </h3>
             <p className="text-gray-600">
-              Advanced machine learning algorithms extract meaningful insights
-              from your documents
+              {t("features.aiPowered.description")}
             </p>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
             <div className="text-3xl mb-4">⚡</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Quick Processing
+              {t("features.quickProcessing.title")}
             </h3>
             <p className="text-gray-600">
-              Get comprehensive summaries in seconds, not hours of manual
-              reading
+              {t("features.quickProcessing.description")}
             </p>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
             <div className="text-3xl mb-4">📊</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Multiple Formats
+              {t("features.multipleFormats.title")}
             </h3>
             <p className="text-gray-600">
-              Export summaries as text, bullet points, or structured reports
+              {t("features.multipleFormats.description")}
             </p>
           </div>
         </div>
@@ -225,16 +224,18 @@ export default function SummarizerModule() {
         {/* How it Works */}
         <div className="bg-gray-50 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            How it Works
+            {t("howItWorks.title")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="bg-red-500 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 1
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Upload PDF</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {t("howItWorks.steps.upload.title")}
+              </h3>
               <p className="text-gray-600 text-sm">
-                Upload your PDF document to our secure platform
+                {t("howItWorks.steps.upload.description")}
               </p>
             </div>
 
@@ -242,9 +243,11 @@ export default function SummarizerModule() {
               <div className="bg-red-500 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 2
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">AI Analysis</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {t("howItWorks.steps.analyze.title")}
+              </h3>
               <p className="text-gray-600 text-sm">
-                Our AI reads and analyzes the content
+                {t("howItWorks.steps.analyze.description")}
               </p>
             </div>
 
@@ -253,10 +256,10 @@ export default function SummarizerModule() {
                 3
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">
-                Generate Summary
+                {t("howItWorks.steps.generate.title")}
               </h3>
               <p className="text-gray-600 text-sm">
-                Key points and insights are extracted
+                {t("howItWorks.steps.generate.description")}
               </p>
             </div>
 
@@ -265,10 +268,10 @@ export default function SummarizerModule() {
                 4
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">
-                Download Results
+                {t("howItWorks.steps.download.title")}
               </h3>
               <p className="text-gray-600 text-sm">
-                Get your summary in your preferred format
+                {t("howItWorks.steps.download.description")}
               </p>
             </div>
           </div>

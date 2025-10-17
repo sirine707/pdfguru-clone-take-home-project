@@ -6,6 +6,316 @@
     "aiSummarizer": "AI PDF Summarizer",
     "signIn": "Sign In",
     "logOut": "Log out"
+  },
+  "AuthModal": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "firstNamePlaceholder": "Enter your first name",
+    "lastNamePlaceholder": "Enter your last name",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "loading": "Loading...",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Email is invalid",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required"
+    }
+  },
+  "Home": {
+    "heroTitle": "Your Complete PDF Solution",
+    "heroSubtitle": "Edit, convert, and summarize PDFs with our powerful suite of tools. Everything you need to work with PDFs in one place.",
+    "keyFeatures": "Key Features:",
+    "getStarted": "Get Started →",
+    "ctaTitle": "Ready to transform your PDF workflow?",
+    "ctaSubtitle": "Choose any of our tools above to get started with your PDF tasks.",
+    "startEditing": "Start Editing",
+    "convertFiles": "Convert Files",
+    "aiSummarize": "AI Summarize",
+    "modules": {
+      "editSign": {
+        "title": "Edit & Sign PDF",
+        "description": "Edit, annotate, compress, split, merge, and sign your PDF documents with ease.",
+        "features": {
+          "edit": "Edit PDF",
+          "compress": "Compress PDF",
+          "split": "Split PDF",
+          "merge": "Merge PDF",
+          "sign": "Sign PDF",
+          "annotate": "Annotate PDF"
+        }
+      },
+      "converter": {
+        "title": "PDF Converter Tool",
+        "description": "Convert PDFs to various formats or convert other formats to PDF.",
+        "features": {
+          "pdfToWord": "PDF to Word",
+          "pdfToImage": "PDF to Image",
+          "wordToPdf": "Word to PDF",
+          "imageToPdf": "Image to PDF",
+          "excelToPdf": "Excel to PDF"
+        }
+      },
+      "summarizer": {
+        "title": "AI PDF Summarizer",
+        "description": "Extract key insights and summaries from your PDF documents using AI.",
+        "features": {
+          "aiAnalysis": "AI Analysis",
+          "quickProcessing": "Quick Processing",
+          "multipleFormats": "Multiple Formats",
+          "keyInsights": "Key Insights"
+        }
+      }
+    }
+  },
+  "EditSignModule": {
+    "title": "Edit & Sign PDF",
+    "tools": {
+      "edit": "Edit PDF",
+      "compress": "Compress PDF",
+      "split": "Split PDF",
+      "merge": "Merge PDF",
+      "annotate": "Annotate PDF",
+      "extract": "Extract PDF Pages",
+      "delete": "Delete PDF Pages",
+      "fill": "Fill Out PDF",
+      "rotate": "Rotate PDF",
+      "create": "Create PDF",
+      "organize": "Organize PDF",
+      "sign": "Sign PDF",
+      "password": "Password Protect PDF",
+      "ocr": "OCR PDF",
+      "crop": "Crop PDF"
+    },
+    "buttons": {
+      "compress": "Compress",
+      "ocr": "OCR",
+      "upload": "Upload"
+    }
+  },
+  "SummarizerModule": {
+    "title": "AI PDF Summarizer",
+    "subtitle": "Extract key insights and summaries from your PDF documents using advanced AI technology",
+    "errors": {
+      "invalidFile": "Please select a valid PDF file",
+      "fileTooLarge": "File size must be less than 10MB",
+      "noFile": "Please select a PDF file"
+    },
+    "upload": {
+      "dropFile": "Drop file here",
+      "uploadDocument": "Upload your PDF document",
+      "fileSelected": "File selected! Click continue below to proceed.",
+      "dragAndDrop": "Drag and drop your PDF here, or click to browse",
+      "chooseFile": "Choose File",
+      "maxSize": "Maximum file size: 10MB",
+      "continue": "Continue to Summarizer"
+    },
+    "features": {
+      "aiPowered": {
+        "title": "AI-Powered Analysis",
+        "description": "Advanced machine learning algorithms extract meaningful insights from your documents"
+      },
+      "quickProcessing": {
+        "title": "Quick Processing",
+        "description": "Get comprehensive summaries in seconds, not hours of manual reading"
+      },
+      "multipleFormats": {
+        "title": "Multiple Formats",
+        "description": "Export summaries as text, bullet points, or structured reports"
+      }
+    },
+    "howItWorks": {
+      "title": "How it Works",
+      "steps": {
+        "upload": {
+          "title": "Upload PDF",
+          "description": "Upload your PDF document to our secure platform"
+        },
+        "analyze": {
+          "title": "AI Analysis",
+          "description": "Our AI reads and analyzes the content"
+        },
+        "generate": {
+          "title": "Generate Summary",
+          "description": "Key points and insights are extracted"
+        },
+        "download": {
+          "title": "Download Results",
+          "description": "Get your summary in your preferred format"
+        }
+      }
+    }
+  },
+  "ConverterModule": {
+    "title": "PDF Converter Tool",
+    "tabs": {
+      "convertFromPdf": "Convert from PDF",
+      "convertToPdf": "Convert to PDF",
+      "otherFormats": "Other Formats"
+    },
+    "button": "Convert",
+    "errors": {
+      "invalidFileType": "Invalid file type. Please select a valid file.",
+      "conversionFailed": "Conversion failed. Please try again.",
+      "conversionError": "An error occurred during conversion. Please try again."
+    },
+    "tools": {
+      "pdfConverter": "PDF Converter",
+      "pdfToWord": "PDF to Word",
+      "pdfToPng": "PDF to PNG",
+      "pdfToJpg": "PDF to JPG",
+      "pdfToExcel": "PDF to Excel",
+      "pdfToPptx": "PDF to PPTX",
+      "pdfToAzw3": "PDF to AZW3",
+      "pdfToDocx": "PDF to DOCX",
+      "pdfToMobi": "PDF to MOBI",
+      "pdfToText": "PDF to Text",
+      "pdfToTiff": "PDF to TIFF",
+      "pdfToDxf": "PDF to DXF",
+      "pdfToHtml": "PDF to HTML",
+      "pdfToEps": "PDF to EPS",
+      "pdfToWebp": "PDF to WebP",
+      "pdfToEpub": "PDF to EPUB",
+      "pdfToImage": "PDF to Image",
+      "pdfToSvg": "PDF to SVG",
+      "wordToPdf": "Word to PDF",
+      "pngToPdf": "PNG to PDF",
+      "jpgToPdf": "JPG to PDF",
+      "excelToPdf": "Excel to PDF",
+      "pptxToPdf": "PPTX to PDF",
+      "azw3ToPdf": "AZW3 to PDF",
+      "csvToPdf": "CSV to PDF",
+      "djvuToPdf": "DjVu to PDF",
+      "docxToPdf": "DOCX to PDF",
+      "dwgToPdf": "DWG to PDF",
+      "dxfToPdf": "DXF to PDF",
+      "epsToPdf": "EPS to PDF",
+      "epubToPdf": "EPUB to PDF",
+      "imageToPdf": "Image to PDF",
+      "htmlToPdf": "HTML to PDF",
+      "mobiToPdf": "MOBI to PDF",
+      "svgToPdf": "SVG to PDF",
+      "textToPdf": "Text to PDF",
+      "tiffToPdf": "TIFF to PDF",
+      "webpToPdf": "WebP to PDF",
+      "avifToPdf": "Avif to PDF",
+      "heicToPdf": "Heic to PDF",
+      "cbrToPdf": "CBR to PDF",
+      "rtfToPdf": "RTF to PDF",
+      "xpsToPdf": "XPS to PDF",
+      "avifToJpg": "Avif to JPG",
+      "avifToPng": "AVIF to PNG",
+      "webpToPng": "WEBP to PNG",
+      "epubToMobi": "Epub to MOBI",
+      "csvToExcel": "CSV to Excel",
+      "dwgToDxf": "DWG to DXF",
+      "gifToJpg": "GIF to JPG",
+      "gifToPng": "GIF to PNG",
+      "jpegToJpg": "JPEG to JPG",
+      "heicToJpg": "Heic to JPG",
+      "heicToPng": "Heic to PNG",
+      "jpgToPng": "JPG to PNG",
+      "pngToJpg": "PNG to JPG",
+      "svgToJpg": "SVG to JPG",
+      "webpToJpg": "WEBP to JPG",
+      "wordToJpg": "Word to JPG",
+      "pngToWebp": "PNG to WEBP",
+      "svgToPng": "SVG to PNG"
+    }
+  },
+  "FileUploadModal": {
+    "title": "Select File",
+    "label": "Choose a file from your computer",
+    "dragDrop": "Click to browse or drag & drop",
+    "dropHere": "Drop file here",
+    "maxSize": "Max 10MB",
+    "allowedTypes": "Allowed types",
+    "errors": {
+      "invalidType": "Please select a valid file type",
+      "fileTooLarge": "File size must be less than 10MB",
+      "noFile": "Please select a file"
+    },
+    "defaultButton": "Continue to Editor"
+  },
+  "LoadingModal": {
+    "defaultTitle": "Converting...",
+    "defaultMessage": "Please wait while we convert your file"
+  },
+  "SuccessModal": {
+    "title": "Conversion Successful!",
+    "message": "Your file has been converted successfully!",
+    "fileName": "File name:",
+    "downloadAgain": "Download Again",
+    "close": "Close"
+  },
+  "ErrorModal": {
+    "title": "Conversion Failed",
+    "close": "Close"
+  },
+  "MergeModal": {
+    "title": "Merge PDF Files",
+    "instructions": "You can upload up to 15 files, each file size up to 10 MB.",
+    "selectedFiles": "Number of selected files",
+    "addFiles": "Add files to merge",
+    "selectFiles": "Select PDF files to combine into one document",
+    "pdfDocument": "PDF Document",
+    "addButton": "+ Add Files",
+    "maxReached": "(Max reached)",
+    "mergeButton": "Merge selected files",
+    "errors": {
+      "maxFiles": "Maximum of 15 files allowed. Please remove some files before adding more.",
+      "maxFilesPartial": "file(s) added. Maximum of 15 files allowed."
+    }
+  },
+  "FormatSelectionModal": {
+    "title": "Great Job!",
+    "prompt": "Which format do you want to download?",
+    "formats": {
+      "word": "Word",
+      "jpg": "JPG",
+      "excel": "Excel",
+      "png": "PNG",
+      "epub": "EPUB",
+      "pptx": "PPTX"
+    },
+    "cancel": "Cancel",
+    "download": "Download"
+  },
+  "SummarizerEditorModule": {
+    "noFile": {
+      "title": "No File Selected",
+      "message": "Please select a PDF file to edit",
+      "button": "Go Back to Select File"
+    },
+    "loading": "Processing your PDF...",
+    "documentPreview": "Document Preview",
+    "noPdfSelected": {
+      "title": "No PDF Selected",
+      "message": "Please upload a PDF file to view it here"
+    },
+    "aiSummary": "AI Summary",
+    "startConversation": "Start a conversation about your PDF",
+    "thinking": "Thinking...",
+    "messagePlaceholder": "Write your message here",
+    "errors": {
+      "processingPdf": "Sorry, there was an error processing your PDF. Please try again.",
+      "processingQuestion": "Sorry, there was an error processing your question. Please try again."
+    }
+  },
+  "EditorModule": {
+    "noFile": {
+      "title": "No File Selected",
+      "message": "Please select a PDF file to edit",
+      "button": "Go Back to Select File"
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Header from "./Header";
 import FileUploadModal from "./FileUploadModal";
 import FormatSelectionModal from "./FormatSelectionModal";
@@ -10,469 +11,93 @@ import ErrorModal from "./ErrorModal";
 
 interface ConversionTool {
   id: string;
-  name: string;
   icon: string;
   bgColor: string;
   allowedFileTypes?: string[];
 }
 
+// Helper function to convert tool ID to translation key
+const getTranslationKey = (toolId: string): string => {
+  return toolId
+    .split('-')
+    .map((part, index) => 
+      index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)
+    )
+    .join('');
+};
+
 // Convert from PDF tools
 const convertFromPdfTools: ConversionTool[] = [
-  {
-    id: "pdf-converter",
-    name: "PDF Converter",
-    icon: "📄",
-    bgColor: "bg-red-100",
-    allowedFileTypes: [],
-  },
-  {
-    id: "pdf-to-word",
-    name: "PDF to Word",
-    icon: "📝",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-png",
-    name: "PDF to PNG",
-    icon: "🖼️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-jpg",
-    name: "PDF to JPG",
-    icon: "🖼️",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-excel",
-    name: "PDF to Excel",
-    icon: "📊",
-    bgColor: "bg-green-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-pptx",
-    name: "PDF to PPTX",
-    icon: "📽️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-azw3",
-    name: "PDF to AZW3",
-    icon: "📚",
-    bgColor: "bg-yellow-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-docx",
-    name: "PDF to DOCX",
-    icon: "📄",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-mobi",
-    name: "PDF to MOBI",
-    icon: "📱",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-text",
-    name: "PDF to Text",
-    icon: "📝",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-tiff",
-    name: "PDF to TIFF",
-    icon: "🖼️",
-    bgColor: "bg-teal-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-dxf",
-    name: "PDF to DXF",
-    icon: "🎯",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-html",
-    name: "PDF to HTML",
-    icon: "🌐",
-    bgColor: "bg-green-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-eps",
-    name: "PDF to EPS",
-    icon: "📐",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-webp",
-    name: "PDF to WebP",
-    icon: "📷",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-epub",
-    name: "PDF to EPUB",
-    icon: "📖",
-    bgColor: "bg-green-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-image",
-    name: "PDF to Image",
-    icon: "🖼️",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["application/pdf"],
-  },
-  {
-    id: "pdf-to-svg",
-    name: "PDF to SVG",
-    icon: "🎨",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: ["application/pdf"],
-  },
+  { id: "pdf-converter", icon: "📄", bgColor: "bg-red-100", allowedFileTypes: [] },
+  { id: "pdf-to-word", icon: "📝", bgColor: "bg-blue-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-png", icon: "🖼️", bgColor: "bg-orange-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-jpg", icon: "🖼️", bgColor: "bg-pink-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-excel", icon: "📊", bgColor: "bg-green-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-pptx", icon: "📽️", bgColor: "bg-orange-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-azw3", icon: "📚", bgColor: "bg-yellow-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-docx", icon: "📄", bgColor: "bg-purple-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-mobi", icon: "📱", bgColor: "bg-blue-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-text", icon: "📝", bgColor: "bg-purple-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-tiff", icon: "🖼️", bgColor: "bg-teal-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-dxf", icon: "🎯", bgColor: "bg-orange-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-html", icon: "🌐", bgColor: "bg-green-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-eps", icon: "📐", bgColor: "bg-blue-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-webp", icon: "📷", bgColor: "bg-purple-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-epub", icon: "📖", bgColor: "bg-green-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-image", icon: "🖼️", bgColor: "bg-purple-100", allowedFileTypes: ["application/pdf"] },
+  { id: "pdf-to-svg", icon: "🎨", bgColor: "bg-pink-100", allowedFileTypes: ["application/pdf"] },
 ];
 
 // Convert to PDF tools
 const convertToPdfTools: ConversionTool[] = [
-  {
-    id: "pdf-converter",
-    name: "PDF Converter",
-    icon: "📄",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: [],
-  },
-  {
-    id: "word-to-pdf",
-    name: "Word to PDF",
-    icon: "📝",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: [
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ],
-  },
-  {
-    id: "png-to-pdf",
-    name: "PNG to PDF",
-    icon: "🖼️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["image/png"],
-  },
-  {
-    id: "jpg-to-pdf",
-    name: "JPG to PDF",
-    icon: "🖼️",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: ["image/jpeg"],
-  },
-  {
-    id: "excel-to-pdf",
-    name: "Excel to PDF",
-    icon: "📊",
-    bgColor: "bg-green-100",
-    allowedFileTypes: [
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    ],
-  },
-  {
-    id: "pptx-to-pdf",
-    name: "PPTX to PDF",
-    icon: "📽️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: [
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    ],
-  },
-  {
-    id: "azw3-to-pdf",
-    name: "AZW3 to PDF",
-    icon: "📚",
-    bgColor: "bg-yellow-100",
-    allowedFileTypes: ["application/vnd.amazon.ebook"],
-  },
-  {
-    id: "csv-to-pdf",
-    name: "CSV to PDF",
-    icon: "📄",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: ["text/csv"],
-  },
-  {
-    id: "djvu-to-pdf",
-    name: "DjVu to PDF",
-    icon: "📎",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["image/vnd.djvu", "image/x-djvu"],
-  },
-  {
-    id: "docx-to-pdf",
-    name: "DOCX to PDF",
-    icon: "📄",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: [
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ],
-  },
-  {
-    id: "dwg-to-pdf",
-    name: "DWG to PDF",
-    icon: "➕",
-    bgColor: "bg-cyan-100",
-    allowedFileTypes: ["image/vnd.dwg", "application/acad"],
-  },
-  {
-    id: "dxf-to-pdf",
-    name: "DXF to PDF",
-    icon: "⚙️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["application/dxf", "image/vnd.dxf"],
-  },
-  {
-    id: "eps-to-pdf",
-    name: "EPS to PDF",
-    icon: "👥",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: ["application/postscript"],
-  },
-  {
-    id: "epub-to-pdf",
-    name: "EPUB to PDF",
-    icon: "✅",
-    bgColor: "bg-green-100",
-    allowedFileTypes: ["application/epub+zip"],
-  },
-  {
-    id: "image-to-pdf",
-    name: "Image to PDF",
-    icon: "🖼️",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
-  },
-  {
-    id: "html-to-pdf",
-    name: "HTML to PDF",
-    icon: "🌐",
-    bgColor: "bg-green-100",
-    allowedFileTypes: ["text/html"],
-  },
-  {
-    id: "mobi-to-pdf",
-    name: "MOBI to PDF",
-    icon: "📱",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: ["application/x-mobipocket-ebook"],
-  },
-  {
-    id: "svg-to-pdf",
-    name: "SVG to PDF",
-    icon: "🎨",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: ["image/svg+xml"],
-  },
-  {
-    id: "text-to-pdf",
-    name: "Text to PDF",
-    icon: "📝",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["text/plain"],
-  },
-  {
-    id: "tiff-to-pdf",
-    name: "TIFF to PDF",
-    icon: "🖼️",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: ["image/tiff"],
-  },
-  {
-    id: "webp-to-pdf",
-    name: "WebP to PDF",
-    icon: "📷",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: ["image/webp"],
-  },
-  {
-    id: "avif-to-pdf",
-    name: "Avif to PDF",
-    icon: "🎬",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["image/avif"],
-  },
-  {
-    id: "heic-to-pdf",
-    name: "Heic to PDF",
-    icon: "📱",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: ["image/heic", "image/heif"],
-  },
-  {
-    id: "cbr-to-pdf",
-    name: "CBR to PDF",
-    icon: "📚",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["application/x-cbr"],
-  },
-  {
-    id: "rtf-to-pdf",
-    name: "RTF to PDF",
-    icon: "📄",
-    bgColor: "bg-pink-100",
-    allowedFileTypes: ["application/rtf"],
-  },
-  {
-    id: "xps-to-pdf",
-    name: "XPS to PDF",
-    icon: "📄",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["application/vnd.ms-xpsdocument"],
-  },
+  { id: "pdf-converter", icon: "📄", bgColor: "bg-pink-100", allowedFileTypes: [] },
+  { id: "word-to-pdf", icon: "📝", bgColor: "bg-blue-100", allowedFileTypes: ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"] },
+  { id: "png-to-pdf", icon: "🖼️", bgColor: "bg-orange-100", allowedFileTypes: ["image/png"] },
+  { id: "jpg-to-pdf", icon: "🖼️", bgColor: "bg-pink-100", allowedFileTypes: ["image/jpeg"] },
+  { id: "excel-to-pdf", icon: "📊", bgColor: "bg-green-100", allowedFileTypes: ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] },
+  { id: "pptx-to-pdf", icon: "📽️", bgColor: "bg-orange-100", allowedFileTypes: ["application/vnd.openxmlformats-officedocument.presentationml.presentation"] },
+  { id: "azw3-to-pdf", icon: "📚", bgColor: "bg-yellow-100", allowedFileTypes: ["application/vnd.amazon.ebook"] },
+  { id: "csv-to-pdf", icon: "📄", bgColor: "bg-blue-100", allowedFileTypes: ["text/csv"] },
+  { id: "djvu-to-pdf", icon: "📎", bgColor: "bg-purple-100", allowedFileTypes: ["image/vnd.djvu", "image/x-djvu"] },
+  { id: "docx-to-pdf", icon: "📄", bgColor: "bg-pink-100", allowedFileTypes: ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"] },
+  { id: "dwg-to-pdf", icon: "➕", bgColor: "bg-cyan-100", allowedFileTypes: ["image/vnd.dwg", "application/acad"] },
+  { id: "dxf-to-pdf", icon: "⚙️", bgColor: "bg-orange-100", allowedFileTypes: ["application/dxf", "image/vnd.dxf"] },
+  { id: "eps-to-pdf", icon: "👥", bgColor: "bg-blue-100", allowedFileTypes: ["application/postscript"] },
+  { id: "epub-to-pdf", icon: "✅", bgColor: "bg-green-100", allowedFileTypes: ["application/epub+zip"] },
+  { id: "image-to-pdf", icon: "🖼️", bgColor: "bg-purple-100", allowedFileTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"] },
+  { id: "html-to-pdf", icon: "🌐", bgColor: "bg-green-100", allowedFileTypes: ["text/html"] },
+  { id: "mobi-to-pdf", icon: "📱", bgColor: "bg-blue-100", allowedFileTypes: ["application/x-mobipocket-ebook"] },
+  { id: "svg-to-pdf", icon: "🎨", bgColor: "bg-pink-100", allowedFileTypes: ["image/svg+xml"] },
+  { id: "text-to-pdf", icon: "📝", bgColor: "bg-purple-100", allowedFileTypes: ["text/plain"] },
+  { id: "tiff-to-pdf", icon: "🖼️", bgColor: "bg-blue-100", allowedFileTypes: ["image/tiff"] },
+  { id: "webp-to-pdf", icon: "📷", bgColor: "bg-pink-100", allowedFileTypes: ["image/webp"] },
+  { id: "avif-to-pdf", icon: "🎬", bgColor: "bg-orange-100", allowedFileTypes: ["image/avif"] },
+  { id: "heic-to-pdf", icon: "📱", bgColor: "bg-pink-100", allowedFileTypes: ["image/heic", "image/heif"] },
+  { id: "cbr-to-pdf", icon: "📚", bgColor: "bg-purple-100", allowedFileTypes: ["application/x-cbr"] },
+  { id: "rtf-to-pdf", icon: "📄", bgColor: "bg-pink-100", allowedFileTypes: ["application/rtf"] },
+  { id: "xps-to-pdf", icon: "📄", bgColor: "bg-orange-100", allowedFileTypes: ["application/vnd.ms-xpsdocument"] },
 ];
 
 // Other Formats tools
 const otherFormatsTools: ConversionTool[] = [
-  {
-    id: "avif-to-jpg",
-    name: "Avif to JPG",
-    icon: "🖼️",
-    bgColor: "bg-cyan-100",
-    allowedFileTypes: ["image/avif"],
-  },
-  {
-    id: "avif-to-png",
-    name: "AVIF to PNG",
-    icon: "🖼️",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["image/avif"],
-  },
-  {
-    id: "webp-to-png",
-    name: "WEBP to PNG",
-    icon: "📷",
-    bgColor: "bg-cyan-100",
-    allowedFileTypes: ["image/webp"],
-  },
-  {
-    id: "epub-to-mobi",
-    name: "Epub to MOBI",
-    icon: "📖",
-    bgColor: "bg-cyan-100",
-    allowedFileTypes: ["application/epub+zip"],
-  },
-  {
-    id: "csv-to-excel",
-    name: "CSV to Excel",
-    icon: "📊",
-    bgColor: "bg-cyan-100",
-    allowedFileTypes: ["text/csv"],
-  },
-  {
-    id: "dwg-to-dxf",
-    name: "DWG to DXF",
-    icon: "🔲",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["image/vnd.dwg", "application/acad"],
-  },
-  {
-    id: "gif-to-jpg",
-    name: "GIF to JPG",
-    icon: "📷",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["image/gif"],
-  },
-  {
-    id: "gif-to-png",
-    name: "GIF to PNG",
-    icon: "📷",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["image/gif"],
-  },
-  {
-    id: "jpeg-to-jpg",
-    name: "JPEG to JPG",
-    icon: "🖼️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["image/jpeg"],
-  },
-  {
-    id: "heic-to-jpg",
-    name: "Heic to JPG",
-    icon: "🖼️",
-    bgColor: "bg-purple-100",
-    allowedFileTypes: ["image/heic", "image/heif"],
-  },
-  {
-    id: "heic-to-png",
-    name: "Heic to PNG",
-    icon: "🖼️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["image/heic", "image/heif"],
-  },
-  {
-    id: "jpg-to-png",
-    name: "JPG to PNG",
-    icon: "🖼️",
-    bgColor: "bg-yellow-100",
-    allowedFileTypes: ["image/jpeg"],
-  },
-  {
-    id: "png-to-jpg",
-    name: "PNG to JPG",
-    icon: "🖼️",
-    bgColor: "bg-yellow-100",
-    allowedFileTypes: ["image/png"],
-  },
-  {
-    id: "svg-to-jpg",
-    name: "SVG to JPG",
-    icon: "🖼️",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["image/svg+xml"],
-  },
-  {
-    id: "webp-to-jpg",
-    name: "WEBP to JPG",
-    icon: "📷",
-    bgColor: "bg-cyan-100",
-    allowedFileTypes: ["image/webp"],
-  },
-  {
-    id: "word-to-jpg",
-    name: "Word to JPG",
-    icon: "📄",
-    bgColor: "bg-blue-100",
-    allowedFileTypes: [
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ],
-  },
-  {
-    id: "png-to-webp",
-    name: "PNG to WEBP",
-    icon: "🖼️",
-    bgColor: "bg-cyan-100",
-    allowedFileTypes: ["image/png"],
-  },
-  {
-    id: "svg-to-png",
-    name: "SVG to PNG",
-    icon: "🌊",
-    bgColor: "bg-orange-100",
-    allowedFileTypes: ["image/svg+xml"],
-  },
+  { id: "avif-to-jpg", icon: "🖼️", bgColor: "bg-cyan-100", allowedFileTypes: ["image/avif"] },
+  { id: "avif-to-png", icon: "🖼️", bgColor: "bg-purple-100", allowedFileTypes: ["image/avif"] },
+  { id: "webp-to-png", icon: "📷", bgColor: "bg-cyan-100", allowedFileTypes: ["image/webp"] },
+  { id: "epub-to-mobi", icon: "📖", bgColor: "bg-cyan-100", allowedFileTypes: ["application/epub+zip"] },
+  { id: "csv-to-excel", icon: "📊", bgColor: "bg-cyan-100", allowedFileTypes: ["text/csv"] },
+  { id: "dwg-to-dxf", icon: "🔲", bgColor: "bg-purple-100", allowedFileTypes: ["image/vnd.dwg", "application/acad"] },
+  { id: "gif-to-jpg", icon: "📷", bgColor: "bg-purple-100", allowedFileTypes: ["image/gif"] },
+  { id: "gif-to-png", icon: "📷", bgColor: "bg-orange-100", allowedFileTypes: ["image/gif"] },
+  { id: "jpeg-to-jpg", icon: "🖼️", bgColor: "bg-orange-100", allowedFileTypes: ["image/jpeg"] },
+  { id: "heic-to-jpg", icon: "🖼️", bgColor: "bg-purple-100", allowedFileTypes: ["image/heic", "image/heif"] },
+  { id: "heic-to-png", icon: "🖼️", bgColor: "bg-orange-100", allowedFileTypes: ["image/heic", "image/heif"] },
+  { id: "jpg-to-png", icon: "🖼️", bgColor: "bg-yellow-100", allowedFileTypes: ["image/jpeg"] },
+  { id: "png-to-jpg", icon: "🖼️", bgColor: "bg-yellow-100", allowedFileTypes: ["image/png"] },
+  { id: "svg-to-jpg", icon: "🖼️", bgColor: "bg-orange-100", allowedFileTypes: ["image/svg+xml"] },
+  { id: "webp-to-jpg", icon: "📷", bgColor: "bg-cyan-100", allowedFileTypes: ["image/webp"] },
+  { id: "word-to-jpg", icon: "📄", bgColor: "bg-blue-100", allowedFileTypes: ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"] },
+  { id: "png-to-webp", icon: "🖼️", bgColor: "bg-cyan-100", allowedFileTypes: ["image/png"] },
+  { id: "svg-to-png", icon: "🌊", bgColor: "bg-orange-100", allowedFileTypes: ["image/svg+xml"] },
 ];
 
 const pdfConverterAllowedMimeTypes = new Set<string>([
@@ -483,6 +108,7 @@ const pdfConverterAllowedMimeTypes = new Set<string>([
 ]);
 
 export default function ConverterModule() {
+  const t = useTranslations("ConverterModule");
   const [activeTab, setActiveTab] = useState<"from" | "to" | "other">("from");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTool, setSelectedTool] = useState<ConversionTool | null>(null);
@@ -540,7 +166,7 @@ export default function ConverterModule() {
       if (tool) {
         toolId = tool.id;
       } else {
-        setConversionError("Invalid file type. Please select a valid file.");
+        setConversionError(t("errors.invalidFileType"));
         setIsConverting(false);
         return;
       }
@@ -566,13 +192,13 @@ export default function ConverterModule() {
         downloadFile(data.result.fileUrl, data.result.fileName);
       } else {
         setConversionError(
-          data.message || "Conversion failed. Please try again."
+          data.message || t("errors.conversionFailed")
         );
       }
     } catch (error) {
       console.error("Conversion error:", error);
       setConversionError(
-        "An error occurred during conversion. Please try again."
+        t("errors.conversionError")
       );
     } finally {
       setIsConverting(false);
@@ -625,13 +251,13 @@ export default function ConverterModule() {
         downloadFile(data.result.fileUrl, data.result.fileName);
       } else {
         setConversionError(
-          data.message || "Conversion failed. Please try again."
+          data.message || t("errors.conversionFailed")
         );
       }
     } catch (error) {
       console.error("Conversion error:", error);
       setConversionError(
-        "An error occurred during conversion. Please try again."
+        t("errors.conversionError")
       );
     } finally {
       setIsConverting(false);
@@ -652,7 +278,7 @@ export default function ConverterModule() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Title */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-black">PDF Converter Tool</h1>
+          <h1 className="text-4xl font-bold text-black">{t("title")}</h1>
         </div>
 
         {/* Sub-navigation tabs */}
@@ -666,7 +292,7 @@ export default function ConverterModule() {
                   : "text-gray-600 hover:text-black"
               }`}
             >
-              Convert from PDF
+              {t("tabs.convertFromPdf")}
             </button>
             <button
               onClick={() => setActiveTab("to")}
@@ -676,7 +302,7 @@ export default function ConverterModule() {
                   : "text-gray-600 hover:text-black"
               }`}
             >
-              Convert to PDF
+              {t("tabs.convertToPdf")}
             </button>
             <button
               onClick={() => setActiveTab("other")}
@@ -686,7 +312,7 @@ export default function ConverterModule() {
                   : "text-gray-600 hover:text-black"
               }`}
             >
-              Other Formats
+              {t("tabs.otherFormats")}
             </button>
           </div>
         </div>
@@ -701,7 +327,7 @@ export default function ConverterModule() {
             >
               <div className="flex items-center space-x-4">
                 {/* <div className="text-2xl">{tool.icon}</div> */}
-                <div className="text-black font-medium">{tool.name}</div>
+                <div className="text-black font-medium">{t(`tools.${getTranslationKey(tool.id)}`)}</div>
               </div>
             </div>
           ))}
@@ -718,7 +344,7 @@ export default function ConverterModule() {
             ? Array.from(pdfConverterAllowedMimeTypes)
             : selectedTool?.allowedFileTypes
         }
-        submitButtonText="Convert"
+        submitButtonText={t("button")}
       />
 
       {/* Format Selection Modal */}

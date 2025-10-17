@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface ConversionResult {
   fileUrl: string;
   fileName: string;
@@ -18,6 +20,8 @@ export default function SuccessModal({
   onDownload,
   result
 }: SuccessModalProps) {
+  const t = useTranslations("SuccessModal");
+  
   if (!isOpen) return null;
 
   return (
@@ -25,7 +29,7 @@ export default function SuccessModal({
       <div className="bg-white rounded-lg p-8 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            Conversion Successful!
+            {t("title")}
           </h2>
           <button
             onClick={onClose}
@@ -65,11 +69,11 @@ export default function SuccessModal({
           </div>
 
           <p className="text-center text-gray-700 mb-4">
-            Your file has been converted successfully!
+            {t("message")}
           </p>
 
           <div className="bg-gray-50 rounded-lg p-4 mb-4">
-            <p className="text-sm text-gray-600 mb-1">File name:</p>
+            <p className="text-sm text-gray-600 mb-1">{t("fileName")}</p>
             <p className="text-gray-900 font-medium break-all">
               {result.fileName}
             </p>
@@ -81,13 +85,13 @@ export default function SuccessModal({
             onClick={onDownload}
             className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md font-medium transition-colors"
           >
-            Download Again
+            {t("downloadAgain")}
           </button>
           <button
             onClick={onClose}
             className="w-full bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md font-medium transition-colors"
           >
-            Close
+            {t("close")}
           </button>
         </div>
       </div>
