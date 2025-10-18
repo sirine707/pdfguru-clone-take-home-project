@@ -31,8 +31,16 @@
     }
   },
   "Home": {
-    "heroTitle": "Your Complete PDF Solution",
-    "heroSubtitle": "Edit, convert, and summarize PDFs with our powerful suite of tools. Everything you need to work with PDFs in one place.",
+    "heroTitle": "PDF Editor for All Your Needs",
+    "heroSubtitle": "Manage all your PDF files with a single online tool",
+    "uploadTitle": "Upload or Drag&Drop your file",
+    "uploadSize": "Max size: 10MB",
+    "dropFile": "Drop your file here",
+    "features": {
+      "privacy": "Privacy-Focused",
+      "easy": "Easy to Use",
+      "fast": "Lightning-Fast"
+    },
     "keyFeatures": "Key Features:",
     "getStarted": "Get Started →",
     "ctaTitle": "Ready to transform your PDF workflow?",
@@ -40,6 +48,10 @@
     "startEditing": "Start Editing",
     "convertFiles": "Convert Files",
     "aiSummarize": "AI Summarize",
+    "errors": {
+      "invalidFile": "Please select a valid PDF file",
+      "fileTooLarge": "File size must be less than 10MB"
+    },
     "modules": {
       "editSign": {
         "title": "Edit & Sign PDF",

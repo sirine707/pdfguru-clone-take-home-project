@@ -275,9 +275,9 @@ export default function SummarizerEditorModule() {
                                 <ReactMarkdown>{message.content}</ReactMarkdown>
                               </div>
                             ) : (
-                              <p className="text-sm whitespace-pre-wrap">
+                              <div className="text-sm whitespace-pre-wrap">
                                 <ReactMarkdown>{message.content}</ReactMarkdown>
-                              </p>
+                              </div>
                             )}
                           </div>
                         </div>

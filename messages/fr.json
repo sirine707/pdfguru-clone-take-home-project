@@ -31,8 +31,16 @@
     }
   },
   "Home": {
-    "heroTitle": "Votre Solution PDF Complète",
-    "heroSubtitle": "Modifiez, convertissez et résumez des PDF avec notre suite d'outils puissants. Tout ce dont vous avez besoin pour travailler avec des PDF en un seul endroit.",
+    "heroTitle": "Éditeur PDF pour Tous Vos Besoins",
+    "heroSubtitle": "Gérez tous vos fichiers PDF avec un seul outil en ligne",
+    "uploadTitle": "Téléchargez ou Glissez-Déposez votre fichier",
+    "uploadSize": "Taille max : 10MB",
+    "dropFile": "Déposez votre fichier ici",
+    "features": {
+      "privacy": "Respect de la Vie Privée",
+      "easy": "Facile à Utiliser",
+      "fast": "Ultra-Rapide"
+    },
     "keyFeatures": "Fonctionnalités Clés :",
     "getStarted": "Commencer →",
     "ctaTitle": "Prêt à transformer votre flux de travail PDF ?",
@@ -40,6 +48,10 @@
     "startEditing": "Commencer l'Édition",
     "convertFiles": "Convertir des Fichiers",
     "aiSummarize": "Résumé IA",
+    "errors": {
+      "invalidFile": "Veuillez sélectionner un fichier PDF valide",
+      "fileTooLarge": "La taille du fichier doit être inférieure à 10MB"
+    },
     "modules": {
       "editSign": {
         "title": "Modifier & Signer PDF",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "../lib/navigation";
 import AuthModal from "./AuthModal";
@@ -18,6 +18,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const langMenuRef = useRef<HTMLDivElement>(null);
 
   const switchLocale = (newLocale: string) => {
     // Use the localized router to switch locale while preserving the current path
@@ -25,13 +26,30 @@ export default function Header({ activePage = "home" }: HeaderProps) {
     setIsLangMenuOpen(false);
   };
 
+  // Handle clicks outside the language menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+        setIsLangMenuOpen(false);
+      }
+    };
+
+    if (isLangMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLangMenuOpen]);
+
   return (
     <header className="w-full bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top row */}
         <div className="flex justify-between items-center py-2">
           <div className="flex items-center space-x-4">
-            <div className="relative">
+            <div className="relative" ref={langMenuRef}>
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
                 className="flex items-center space-x-1 text-sm text-gray-600 hover:text-gray-900"
