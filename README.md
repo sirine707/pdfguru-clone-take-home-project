@@ -110,6 +110,91 @@ Open [http://localhost:4000](http://localhost:4000) to view the backend app.
 ├── uploads/               # Uploaded PDF files storage
 ```
 
+## Architecture & Design Decisions
+
+### System Integration & Data Flow
+
+**Frontend-Backend Communication:**
+The application uses a clean REST API architecture where the Next.js frontend communicates with the Express backend through well-defined endpoints:
+
+- **Authentication Flow**: JWT tokens are stored in localStorage and sent via Authorization headers for protected routes
+- **File Upload Strategy**: Uses FormData with multipart uploads for PDF files, handled by Multer middleware on the backend
+- **Real-time Chat**: For the AI summarizer, implements a thread-based conversation system using OpenAI's Assistant API
+
+**State Management Architecture:**
+- **AuthContext**: Manages user authentication state globally, with automatic token validation and session persistence
+- **FileContext**: Handles file selection state across different modules, ensuring consistent file handling between converter, editor, and summarizer
+- **Component-level State**: Each module maintains its own UI state (loading, errors, modals) for better separation of concerns
+
+### Component Design Patterns
+
+**Modular Feature Architecture:**
+Each major feature (Converter, Editor, Summarizer) is built as a self-contained module with its own:
+- Main component (`ConverterModule.tsx`, `EditSignModule.tsx`, `SummarizerModule.tsx`)
+- Editor component for advanced interactions (`SummarizerEditorModule.tsx`)
+- Shared modal components for consistent UX (`FileUploadModal`, `LoadingModal`, `SuccessModal`)
+
+**Smart Component Composition:**
+- **Header Component**: Reused across all modules with context-aware authentication state
+- **Modal System**: Centralized modal components prevent code duplication and ensure consistent styling
+- **Tool Configuration**: Uses configuration objects to define available tools, making it easy to add new conversion types or editing tools
+
+### Backend Service Architecture
+
+**Modular Structure:**
+The backend follows a modular architecture pattern, with each feature separated into its own dedicated module:
+
+- **auth.ts**: Handles user registration, login, and profile management with bcrypt password hashing
+- **converter.ts**: Manages file conversion using ConvertAPI with extensive format support (18+ conversion types)
+- **summarizer.ts**: Integrates OpenAI Assistant API with file search capabilities for intelligent document analysis
+
+**Database Design:**
+- **Minimal User Model**: Focuses only on essential authentication fields (firstName, lastName, email, password)
+- **File Handling**: Temporary file storage with automatic cleanup, no permanent file storage to keep the database lightweight
+
+### API Integration Strategies
+
+**OpenAI Integration (Summarizer):**
+- **Assistant Persistence**: Creates and reuses OpenAI assistants to reduce API calls and improve performance
+- **Thread Management**: Each PDF analysis session gets its own conversation thread
+- **Locale-aware Responses**: Dynamically adjusts AI responses based on user's language preference
+- **Citation Cleanup**: Removes OpenAI citation markers for cleaner user experience
+
+**ConvertAPI Integration (Converter):**
+- **Format Flexibility**: Supports bidirectional conversions (PDF→formats and formats→PDF)
+- **Error Resilience**: Comprehensive error handling for network issues and API limitations
+- **File Validation**: Client and server-side validation for file types and sizes
+
+**PSPDFKit Integration (Editor):**
+- **Client-side Processing**: Reduces server load by handling PDF editing entirely in the browser
+- **Performance Optimization**: Loads PSPDFKit only when needed to reduce initial bundle size
+
+### Security & Performance Considerations
+
+**Authentication Security:**
+- **Password Security**: bcrypt with 10 salt rounds for password hashing
+- **Token Management**: Short-lived JWT tokens (1 hour for sign-in, 365 days for sign-up) with proper expiration handling
+
+**File Security & Performance:**
+- **Size Limits**: 10MB file size limit prevents server overload
+- **Type Validation**: Both client and server-side MIME type validation
+- **Temporary Storage**: Files are processed and immediately cleaned up, not permanently stored
+
+**Internationalization Strategy:**
+- **Route-based Localization**: URL structure includes locale (`/en/converter`, `/fr/converter`) for SEO benefits
+- **Dynamic Content**: API responses adapt to user's language preference
+- **Component Translation**: Centralized translation files with type-safe translation keys
+
+### Why These Specific Choices?
+
+**Technology Selection Reasoning:**
+1. **Next.js App Router**: Provides server-side rendering for better SEO while maintaining SPA-like navigation
+2. **TypeScript Throughout**: Catches integration errors between frontend and backend at compile time
+3. **Prisma ORM**: Type-safe database queries that match the TypeScript interfaces used in the frontend
+4. **JWT over Sessions**: Enables horizontal scaling and works well with modern frontend frameworks
+5. **Modal-based UI**: Reduces page loads and provides smoother user experience for file operations
+6. **Context Providers**: Prevent prop drilling while keeping state management simple and React-native
+
 ## Demo
 
 [![Watch Demo](https://img.youtube.com/vi/E8hh81jDVac/0.jpg)](https://youtu.be/E8hh81jDVac)
