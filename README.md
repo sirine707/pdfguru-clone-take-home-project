@@ -197,9 +197,9 @@ The backend follows a modular architecture pattern, with each feature separated 
 
 ## Demo
 
-[![Watch Demo](https://img.youtube.com/vi/E8hh81jDVac/0.jpg)](https://www.youtube.com/watch?v=1PezHMBiXHI)
+[![Watch Demo](https://i3.ytimg.com/vi/1PezHMBiXHI/hqdefault.jpg)](https://youtu.be/1PezHMBiXHI?si=KtCapLyN9gSsOfO0)
 
-[Watch Demo Video](https://www.youtube.com/watch?v=1PezHMBiXHI)
+[Watch Demo Video](https://youtu.be/1PezHMBiXHI?si=KtCapLyN9gSsOfO0)
 
 ## Follow-Up Work
 
